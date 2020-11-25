@@ -6,7 +6,7 @@ import {createTripSortingTemplate} from './view/trip-sorting';
 import {createNewEventTemplate} from './view/new-event';
 import {createEditEventTemplate} from './view/edit-event';
 import {createEventTemplate} from './view/event';
-import {createLoadingTemplate} from './view/events-loading';
+import {createEventsLoadingTemplate} from './view/events-loading';
 
 const EVENTS_AMOUNT = 3;
 

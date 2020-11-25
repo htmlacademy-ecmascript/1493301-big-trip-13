@@ -1,4 +1,4 @@
-export const createLoadingTemplate = () => {
+export const createEventsLoadingTemplate = () => {
   return `
   <p class="trip-events__msg">Loading...</p>`;
 };
