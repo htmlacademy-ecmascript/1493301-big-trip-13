@@ -1,12 +1,12 @@
 import {createTripInfoTemplate} from './view/trip-info';
 import {createSiteMenuTemplate} from './view/site-menu';
-import {createTripFilters} from './view/trip-filters';
+import {createTripFiltersTemplate} from './view/trip-filters';
 import {createListTemplate} from './view/list';
-import {createTripSorting} from './view/trip-sorting';
+import {createTripSortingTemplate} from './view/trip-sorting';
 import {createNewEventTemplate} from './view/new-event';
 import {createEditEventTemplate} from './view/edit-event';
 import {createEventTemplate} from './view/event';
-import {createLoading} from './view/events-loading';
+import {createLoadingTemplate} from './view/events-loading';
 
 const EVENTS_AMOUNT = 3;
 
@@ -21,8 +21,8 @@ const tripEventsElement = siteMainElement.querySelector(`.trip-events`);
 
 render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
 render(tripControlsElement, createSiteMenuTemplate(), `afterbegin`);
-render(tripControlsElement, createTripFilters(), `beforeend`);
-render(tripEventsElement, createTripSorting(), `afterbegin`);
+render(tripControlsElement, createTripFiltersTemplate(), `beforeend`);
+render(tripEventsElement, createTripSortingTemplate(), `afterbegin`);
 render(tripEventsElement, createListTemplate(), `beforeend`);
 
 const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
@@ -30,9 +30,13 @@ const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__lis
 render(tripEventsListElement, createEditEventTemplate(), `afterbegin`);
 
 
-for (let i = 0; i < EVENTS_AMOUNT; i++) {
-  render(tripEventsListElement, createEventTemplate(), `beforeend`);
-}
+const renderEventsList = () => {
+  for (let i = 0; i < EVENTS_AMOUNT; i++) {
+    render(tripEventsListElement, createEventTemplate(), `beforeend`);
+  }
+};
+
+renderEventsList();
 
 render(tripEventsListElement, createNewEventTemplate(), `beforeend`);
-render(tripEventsListElement, createLoading(), `beforeend`);
+render(tripEventsListElement, createLoadingTemplate(), `beforeend`);
