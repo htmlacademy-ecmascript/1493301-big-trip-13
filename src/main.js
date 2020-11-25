@@ -39,4 +39,4 @@ const renderEventsList = () => {
 renderEventsList();
 
 render(tripEventsListElement, createNewEventTemplate(), `beforeend`);
-render(tripEventsListElement, createLoadingTemplate(), `beforeend`);
+render(tripEventsListElement, createEventsLoadingTemplate(), `beforeend`);
