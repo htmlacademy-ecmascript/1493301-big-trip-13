@@ -1,8 +1,7 @@
 import {EVENT_TYPES} from '../const';
-import {humaneEditEventTime} from '../util';
+import {humaneEditEventTime, capitalize} from '../util';
 
 export const createEditEventTemplate = (event = {}) => {
-
   const {
     city,
     eventType,
@@ -14,58 +13,31 @@ export const createEditEventTemplate = (event = {}) => {
     photos,
   } = event;
 
+
   const createDetailsSection = () => {
+    const offersSection = createOffersSection();
     return `
-    ${(offers.length || description.length) ? `
-      <section class="event__details">
         ${offersSection}
-        ${descriptionSection}
-      </section>
-    ` : ``}
     `;
   };
 
   const createOffersSection = () => {
-    return `
-    ${offers.length ? `<section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-      <div class="event__available-offers">
+    return `
         ${offersTemplate}
-      </div>
-    </section>
-    ` : ``}
-    `;
-  };
-
-  const createDescriptionSection = () => {
-    return `
-    ${description.length ? `<section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${description}</p>
-    </section>
-    ` : ``}
-    `;
+      `;
   };
 
   const createPhotosSection = () => {
     return `
-    ${photos.length ? `
-      <div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${photos.map(({photoPath}) => `
-            <img class="event__photo" src="${photoPath}" alt="Event photo">
-          `).join(``)}
-        </div>
-      </div>
-    ` : ``}
-    `;
+      ${photos.map(({photoPath}) => `
+      <img class="event__photo" src="${photoPath}" alt="Event photo">
+      `).join(``)}   `;
   };
 
-  const createOffers = () => {
-    return `
-      ${offers.map(({id, name, offerPrice, isChecked}) => `
-        <div class="event__offer-selector">
+  const offerTemplate = (offer) => {
+    const {id, name, isChecked} = offer;
+    return `<div class="event__offer-selector">
           <input
             class="event__offer-checkbox visually-hidden"
             id="event-offer-${id}"
@@ -76,38 +48,37 @@ export const createEditEventTemplate = (event = {}) => {
           <label class="event__offer-label" for="event-offer-${id}">
             <span class="event__offer-title">${name}</span>
             &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offerPrice}</span>
+            <span class="event__offer-price">${price}</span>
           </label>
-        </div>
-      `).join(``)}
+        </div>`;
+
+  };
+
+  const createOffers = () => {
+    return `
+      ${offers.map((offer) => offerTemplate(offer)).join(``)}
     `;
   };
 
   const createEventTypeItems = () => {
     return `
-      ${EVENT_TYPES.map(({id, type, name, image}) => `
-        <div class="event__type-item">
+      ${EVENT_TYPES.map(({type, name, image, id}) => `
           <input
             id="event-type-${type}-${id}"
             class="event__type-input visually-hidden"
             type="radio"
             name="event-type"
-            value="${name}"
-          >
+            value="${name}">
           <label
             class="event__type-label event__type-label--${image}"
-            for="event-type-${type}-${id}"
-          >
+            for="event-type-${type}-${id}">
             ${name}
           </label>
-        </div>
       `).join(``)}
     `;
   };
 
   const offersTemplate = createOffers(offers);
-  const offersSection = createOffersSection();
-  const descriptionSection = createDescriptionSection();
   const detailsSection = createDetailsSection();
   const photosSection = createPhotosSection();
   const eventTypeItems = createEventTypeItems();
@@ -119,7 +90,7 @@ export const createEditEventTemplate = (event = {}) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType.image}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType.toLowerCase()}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -134,7 +105,7 @@ export const createEditEventTemplate = (event = {}) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${eventType.name}
+            ${capitalize(eventType)}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
           <datalist id="destination-list-1">
@@ -184,11 +155,28 @@ export const createEditEventTemplate = (event = {}) => {
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
-
-      ${detailsSection}
-
-      ${photosSection}
-
+      ${(offers.length || description.length) ? `
+      <section class="event__details">
+        ${offers.length ? `<section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${detailsSection}
+        </div>
+      </section>
+      ` : ``}
+      ${description.length ? `<section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${description}</p>
+      ` : ``}
+      ${photos.length ? `
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${photosSection}
+        </div>
+      </div>
+      ` : ``}
+      </section>
+      ` : ``}
     </form>
   </li>
   `;

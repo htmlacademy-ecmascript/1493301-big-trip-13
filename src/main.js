@@ -5,14 +5,13 @@ import {createListTemplate} from './view/list';
 import {createTripSortingTemplate} from './view/trip-sorting';
 import {createEditEventTemplate} from './view/edit-event';
 import {createEventTemplate} from './view/event';
-import {generateMockEvents} from './mock/mock-events';
+import {generateEvent} from './mock/event';
 import {createNewEventTemplate} from './view/new-event';
 import {createEventsLoadingTemplate} from './view/events-loading';
-import {countTotal} from './util';
 
 const EVENTS_AMOUNT = 18;
 
-const events = new Array(EVENTS_AMOUNT).fill().map(generateMockEvents);
+const events = new Array(EVENTS_AMOUNT).fill().map(generateEvent);
 
 
 const render = (container, template, place) => {
@@ -42,8 +41,6 @@ const renderEventsList = () => {
 };
 
 renderEventsList();
-countTotal();
-
 
 render(tripEventsListElement, createNewEventTemplate(), `beforeend`);
 render(tripEventsListElement, createEventsLoadingTemplate(), `beforeend`);
