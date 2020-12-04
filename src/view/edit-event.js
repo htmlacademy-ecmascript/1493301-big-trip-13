@@ -63,6 +63,7 @@ export const createEditEventTemplate = (event = {}) => {
   const createEventTypeItems = () => {
     return `
       ${EVENT_TYPES.map(({type, name, image, id}) => `
+        <div class="event__type-item">
           <input
             id="event-type-${type}-${id}"
             class="event__type-input visually-hidden"
@@ -74,7 +75,7 @@ export const createEditEventTemplate = (event = {}) => {
             for="event-type-${type}-${id}">
             ${name}
           </label>
-      `).join(``)}
+      </div>`).join(``)}
     `;
   };
 

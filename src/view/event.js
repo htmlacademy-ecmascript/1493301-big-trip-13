@@ -19,7 +19,7 @@ export const createEventTemplate = (event) => {
     city,
     eventStart,
     eventEnd,
-    durationToHours,
+    travelDuration,
     price,
     isFavorite,
     offers
@@ -46,7 +46,7 @@ export const createEventTemplate = (event) => {
           &mdash;
           <time class="event__end-time" datetime="${eventEnd}">${humaneEventTime(eventEnd)}</time>
         </p>
-        <p class="event__duration">${durationToHours}H</p>
+        <p class="event__duration">${travelDuration}H</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${price}</span>

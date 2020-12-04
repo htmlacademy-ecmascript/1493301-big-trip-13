@@ -2,9 +2,6 @@ import {getRandomInteger, shuffleArray} from '../util';
 import {EVENT_TYPES, EVENT_OFFERS, TEXT, CITIES} from '../const';
 
 import dayjs from 'dayjs';
-import durationPlugin from 'dayjs/plugin/duration';
-
-dayjs.extend(durationPlugin);
 
 const OFFERS_AMOUNT = 3;
 
@@ -68,8 +65,7 @@ const generateOffers = () => {
 export const generateEvent = () => {
   const eventStart = generateStartDate();
   const eventEnd = generateEndDate(eventStart);
-  const travelDuration = eventEnd - eventStart;
-  const durationToHours = dayjs.duration(travelDuration).hours().toString();
+  const travelDuration = dayjs(eventEnd).diff(eventStart, `minute`);
   const city = generateCities();
   const eventType = generateEventType();
   const price = Math.floor(Math.random() * 1001);
@@ -81,7 +77,7 @@ export const generateEvent = () => {
   return {
     eventStart,
     eventEnd,
-    durationToHours,
+    travelDuration,
     city,
     eventType,
     price,
