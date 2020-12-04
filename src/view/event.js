@@ -1,5 +1,18 @@
 import {humaneEventDate, humaneEventTime} from "../util";
 
+const renderOffers = (offers) => {
+  return `<h4 class="visually-hidden">Offers:</h4>
+    <ul class="event__selected-offers">
+    ${offers.map(({name, price}) => {
+    return `<li class="event__offer">
+        <span class="event__offer-title">${name}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </li>`;
+  }).join(``)}
+  </ul>`;
+};
+
 export const createEventTemplate = (event) => {
   const {
     eventType,
@@ -12,18 +25,6 @@ export const createEventTemplate = (event) => {
     offers
   } = event;
 
-  const renderOffers = () => {
-    return `<h4 class="visually-hidden">Offers:</h4>
-    <ul class="event__selected-offers">
-    ${offers.map(({name, price}) => {
-    return `<li class="event__offer">
-        <span class="event__offer-title">${name}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${price}</span>
-      </li>`;
-  }).join(``)}
-  </ul>`;
-  };
 
   const offersTemplate = offers === null ? `` : renderOffers(offers);
 
