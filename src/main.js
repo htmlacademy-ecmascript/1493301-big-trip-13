@@ -3,12 +3,16 @@ import {createSiteMenuTemplate} from './view/site-menu';
 import {createTripFiltersTemplate} from './view/trip-filters';
 import {createListTemplate} from './view/list';
 import {createTripSortingTemplate} from './view/trip-sorting';
-import {createNewEventTemplate} from './view/new-event';
 import {createEditEventTemplate} from './view/edit-event';
 import {createEventTemplate} from './view/event';
+import {generateEvent} from './mock/event';
+import {createNewEventTemplate} from './view/new-event';
 import {createEventsLoadingTemplate} from './view/events-loading';
 
-const EVENTS_AMOUNT = 3;
+const EVENTS_AMOUNT = 18;
+
+const events = new Array(EVENTS_AMOUNT).fill().map(generateEvent);
+
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -27,12 +31,12 @@ render(tripEventsElement, createListTemplate(), `beforeend`);
 
 const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
-render(tripEventsListElement, createEditEventTemplate(), `afterbegin`);
+render(tripEventsListElement, createEditEventTemplate(events[0]), `afterbegin`);
 
 
 const renderEventsList = () => {
   for (let i = 0; i < EVENTS_AMOUNT; i++) {
-    render(tripEventsListElement, createEventTemplate(), `beforeend`);
+    render(tripEventsListElement, createEventTemplate(events[i]), `beforeend`);
   }
 };
 
