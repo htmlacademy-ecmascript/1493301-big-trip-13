@@ -1,32 +1,8 @@
-export const EVENT_TYPES = [
-  `taxi`,
-  `bus`,
-  `train`,
-  `ship`,
-  `transport`,
-  `drive`,
-  `flight`,
-  `check-In`,
-  `sightseeing`,
-  `restaurant`,
-];
+export const EVENT_TYPES = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`, `check-in`, `sightseeing`, `restaurant`];
 
-export const CITIES = [
-  `Luxembourg`,
-  `Trier`,
-  `Paris`,
-  `Bernkastel-Kues`,
-  `Strasbourg`,
-  `Aachen`,
-  `Barcelona`,
-  `Sant Pol de Mar`,
-  `London`,
-  `Dublin`,
-  `Cabo da Roca`,
-  `Geneva`,
-  `Chamonix`,
-  `Amsterdam`
-];
+export const TRANSFER_EVENTS = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+
+export const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
 
 export const TEXT = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -52,4 +28,22 @@ export const EVENT_OFFERS = {
   taxi: `Order a taxi`,
 };
 
+
+export const SortTypes = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`
+};
+
+export const RenderPosition = {
+  BEFOREBEGIN: `beforebegin`,
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+export const FilterType = {
+  EVERYTHING: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
+};
 

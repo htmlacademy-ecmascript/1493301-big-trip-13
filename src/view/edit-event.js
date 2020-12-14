@@ -1,7 +1,7 @@
 import {EVENT_TYPES} from '../const';
-import {humaneEditEventTime, capitalize} from '../util';
+import {humaneEditEventTime, capitalize, createElement} from '../util';
 
-export const createEditEventTemplate = (event = {}) => {
+const createEditEventTemplate = (event = {}) => {
   const {
     city,
     eventType,
@@ -94,16 +94,13 @@ export const createEditEventTemplate = (event = {}) => {
             <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType.toLowerCase()}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
               ${eventTypeItems}
             </fieldset>
           </div>
-
         </div>
-
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
             ${capitalize(eventType)}
@@ -115,7 +112,6 @@ export const createEditEventTemplate = (event = {}) => {
             <option value="Chamonix"></option>
           </datalist>
         </div>
-
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input
@@ -135,7 +131,6 @@ export const createEditEventTemplate = (event = {}) => {
             value="${humaneEditEventTime(eventEnd)}"
           >
         </div>
-
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-1">
             <span class="visually-hidden">Price</span>
@@ -149,7 +144,6 @@ export const createEditEventTemplate = (event = {}) => {
             value="${price}"
           >
         </div>
-
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
         <button class="event__rollup-btn" type="button">
@@ -182,3 +176,26 @@ export const createEditEventTemplate = (event = {}) => {
   </li>
   `;
 };
+
+export default class EditEventView {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEditEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

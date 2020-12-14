@@ -1,5 +1,6 @@
 import {getRandomInteger, shuffleArray} from '../util';
-import {EVENT_TYPES, EVENT_OFFERS, TEXT, CITIES} from '../const';
+import {EVENT_TYPES, TEXT, CITIES, EVENT_OFFERS} from '../const';
+
 
 import dayjs from 'dayjs';
 
@@ -12,16 +13,16 @@ const generateCities = () => {
   return CITIES[randomIndex];
 };
 
-const generateStartDate = () => {
-  const randomDate = new Date(+(new Date()) + Math.floor(Math.random() * 1000000000));
-
-  return randomDate;
+const generateEndDate = (eventStart) => {
+  return dayjs(eventStart).add(getRandomInteger(0, 48), `hours`).add(getRandomInteger(0, 60), `minutes`).toDate();
 };
 
-const generateEndDate = (eventStart) => {
-  const randomDate = new Date(+(eventStart) + Math.floor(Math.random() * 100000000));
 
-  return randomDate;
+const generateStartDate = () => {
+  const daysGap = getRandomInteger(-7, 7);
+  const hourGap = getRandomInteger(-24, 24);
+  const minGap = getRandomInteger(-59, 59);
+  return dayjs().add(daysGap, `day`).add(hourGap, `hour`).add(minGap, `minute`).toDate();
 };
 
 const generateDescription = () => {
@@ -65,10 +66,10 @@ const generateOffers = () => {
 export const generateEvent = () => {
   const eventStart = generateStartDate();
   const eventEnd = generateEndDate(eventStart);
-  const travelDuration = dayjs(eventEnd).diff(eventStart, `minute`);
+  const travelDuration = dayjs(eventEnd).diff(eventStart, `minutes`);
   const city = generateCities();
   const eventType = generateEventType();
-  const price = Math.floor(Math.random() * 1001);
+  const price = getRandomInteger(3, 150);
   const isFavorite = Boolean(getRandomInteger(0, 1));
   const description = generateDescription();
   const photos = generatePhotos();
@@ -80,10 +81,11 @@ export const generateEvent = () => {
     travelDuration,
     city,
     eventType,
-    price,
     isFavorite,
     description,
     photos,
+    price,
     offers,
   };
 };
+

@@ -1,32 +1,43 @@
-import {humaneEventDate, humaneEventTime} from "../util";
+import {humaneEventDate, humaneEventTime, createPrepositions, createElement} from "../util";
 
-const renderOffers = (offers) => {
+const createOffers = (offers) => {
   return `<h4 class="visually-hidden">Offers:</h4>
-    <ul class="event__selected-offers">
     ${offers.map(({name, price}) => {
     return `<li class="event__offer">
         <span class="event__offer-title">${name}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${price}</span>
       </li>`;
-  }).join(``)}
-  </ul>`;
+  }).join(``)}`;
 };
 
-export const createEventTemplate = (event) => {
+const createEventTemplate = (event) => {
   const {
     eventType,
     city,
     eventStart,
     eventEnd,
     travelDuration,
-    price,
     isFavorite,
-    offers
+    offers,
+    price
   } = event;
 
+  const getTimeDiff = (start, end) => {
+    const timeDiff = end - start;
+    const msInMinute = 60000;
+    const msInHour = msInMinute * 60;
+    const msInDay = 24 * msInMinute * 60;
 
-  const offersTemplate = offers === null ? `` : renderOffers(offers);
+    const days = Math.floor(timeDiff / msInDay);
+    const hours = Math.floor((timeDiff - days * msInDay) / msInHour);
+    const minutes = Math.floor((timeDiff - days * msInDay - hours * msInHour) / msInMinute);
+
+    return `${days > 0 ? `${days}D` : ``} ${hours > 0 ? `${hours}H` : `00H`} ${minutes > 0 ? `${minutes}M` : `00M`}`;
+  };
+
+
+  const offersTemplate = offers ? createOffers(offers) : ``;
 
   const favoriteClassName = isFavorite
     ? `event__favorite-btn--active`
@@ -37,22 +48,23 @@ export const createEventTemplate = (event) => {
     <div class="event">
       <time class="event__date" datetime="${eventStart}">${humaneEventDate(eventStart)}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType.toLowerCase()}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${eventType} ${city}</h3>
+      <h3 class="event__title">${eventType} ${createPrepositions(eventType)} ${city}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${eventStart}">${humaneEventTime(eventStart)}</time>
           &mdash;
           <time class="event__end-time" datetime="${eventEnd}">${humaneEventTime(eventEnd)}</time>
         </p>
-        <p class="event__duration">${travelDuration}H</p>
+        <p class="event__duration">${getTimeDiff(travelDuration)}H</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${price}</span>
       </p>
+      <ul class="event__selected-offers">
       ${offersTemplate}
-
+      </ul>
       <button class="event__favorite-btn  ${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -66,3 +78,26 @@ export const createEventTemplate = (event) => {
   </li>
   `;
 };
+
+export default class EventView {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
