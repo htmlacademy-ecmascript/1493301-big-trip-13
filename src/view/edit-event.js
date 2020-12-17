@@ -121,7 +121,7 @@ const createEditEventTemplate = (event = {}) => {
                     <span class="visually-hidden">Open event</span>
                   </button>
                 </header>
-                ${(offers.length || description.lenght) ? `
+                ${(offers.length || description.length) ? `
 
               <section class="event__details">
                   ${offers.length ? `

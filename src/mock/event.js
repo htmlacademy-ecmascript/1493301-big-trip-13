@@ -1,10 +1,17 @@
 import {getRandomInteger, shuffleArray} from '../util';
-import {EVENT_TYPES, TEXT, CITIES, EVENT_OFFERS} from '../const';
+import {EVENT_TYPES, EVENT_OFFERS} from '../const';
 
 
 import dayjs from 'dayjs';
 
 const OFFERS_AMOUNT = 3;
+const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
+
+const TEXT = [
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.`,
+  `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
+  `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`,
+];
 
 
 const generateCities = () => {
@@ -49,6 +56,21 @@ const generateEventType = () => {
   return EVENT_TYPES[randomIndex];
 };
 
+const generateOffers = () => {
+  const offers = [];
+
+  for (const offerType of Object.keys(EVENT_OFFERS)) {
+    offers.push({
+      type: offerType,
+      name: EVENT_OFFERS[offerType],
+      price: getRandomInteger(3, 150),
+      isChecked: Math.random() > 0.5,
+    });
+  }
+
+  return shuffleArray(offers).slice(0, getRandomInteger(0, OFFERS_AMOUNT));
+};
+
 
 export const generateEvent = () => {
   const eventStart = generateStartDate();
@@ -60,6 +82,7 @@ export const generateEvent = () => {
   const description = generateDescription();
   const photos = generatePhotos();
   const price = getRandomInteger(3, 150);
+  const offers = generateOffers();
 
   return {
     eventStart,
@@ -70,8 +93,7 @@ export const generateEvent = () => {
     isFavorite,
     description,
     photos,
-    offers: shuffleArray(EVENT_OFFERS.filter((offer) => offer.category.includes(eventType))).slice(0, getRandomInteger(0, OFFERS_AMOUNT)),
-    isChecked: Math.random() > 0.5,
+    offers,
     price
   };
 };

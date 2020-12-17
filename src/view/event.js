@@ -14,14 +14,14 @@ const createOffers = (offers) => {
 };
 
 const getTimeDiff = (start, end) => {
+  const MS_IN_MINUTE = 60000;
   const timeDiff = end - start;
-  const msInMinute = 60000;
-  const msInHour = msInMinute * 60;
-  const msInDay = 24 * msInMinute * 60;
+  const msInHour = MS_IN_MINUTE * 60;
+  const msInDay = 24 * MS_IN_MINUTE * 60;
 
   const days = Math.floor(timeDiff / msInDay);
   const hours = Math.floor((timeDiff - days * msInDay) / msInHour);
-  const minutes = Math.floor((timeDiff - days * msInDay - hours * msInHour) / msInMinute);
+  const minutes = Math.floor((timeDiff - days * msInDay - hours * msInHour) / MS_IN_MINUTE);
 
   return `${days > 0 ? `${days}D` : ``} ${hours > 0 ? `${hours}H` : `00H`} ${minutes > 0 ? `${minutes}M` : `00M`}`;
 };
