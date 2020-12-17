@@ -102,15 +102,13 @@
 /*!**********************!*\
   !*** ./src/const.js ***!
   \**********************/
-/*! exports provided: EVENT_TYPES, TRANSFER_EVENTS, CITIES, TEXT, EVENT_OFFERS, SortTypes, RenderPosition, FilterTypes, MenuTabs */
+/*! exports provided: EVENT_TYPES, TRANSFER_EVENTS, EVENT_OFFERS, SortTypes, RenderPosition, FilterTypes, MenuTabs */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EVENT_TYPES", function() { return EVENT_TYPES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TRANSFER_EVENTS", function() { return TRANSFER_EVENTS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CITIES", function() { return CITIES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEXT", function() { return TEXT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EVENT_OFFERS", function() { return EVENT_OFFERS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SortTypes", function() { return SortTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RenderPosition", function() { return RenderPosition; });
@@ -120,96 +118,23 @@ const EVENT_TYPES = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flig
 
 const TRANSFER_EVENTS = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
 
-const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
-
-const TEXT = [
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.`,
-  `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
-  `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`,
-];
-
-const EVENT_OFFERS = [
-  {
-    name: `Add luggage`,
-    type: `luggage`,
-    category: [`train`, `bus`, `flight`],
-    price: Math.floor(Math.random() * 200),
-  },
-  {
-    name: `Add meal`,
-    type: `meal`,
-    category: [`train`, `flight`],
-  },
-  {
-    name: `Switch to comfort`,
-    type: `comfort`,
-    category: [`train`, `flight`, `taxi`, `ship`, `bus`],
-    price: Math.floor(Math.random() * 200),
-  },
-  {
-    name: `Switch to business class`,
-    type: `comfort`,
-    category: [`train`, `flight`, `taxi`, `ship`, `bus`],
-    price: Math.floor(Math.random() * 200),
-
-  },
-  {
-    name: `Choose seats`,
-    type: `seats`,
-    category: [`train`, `bus`, `flight`, `ship`],
-    price: Math.floor(Math.random() * 200),
-
-  },
-  {
-    name: `Order Uber`,
-    type: `taxi`,
-    category: [`taxi`, `transport`],
-    price: Math.floor(Math.random() * 200),
-
-  },
-  {
-    name: `Rent a car`,
-    type: `car`,
-    category: [`drive`, `transport`],
-    price: Math.floor(Math.random() * 200),
-  },
-  {
-    name: `Add breakfast`,
-    type: `breakfast`,
-    category: `check-in`,
-    price: Math.floor(Math.random() * 200),
-  },
-  {
-    name: `Book tickets`,
-    type: `tickets`,
-    category: `sightseeing`,
-    price: Math.floor(Math.random() * 200),
-  },
-  {
-    name: `Lunch in city`,
-    type: `lunch`,
-    category: `sightseeing`,
-    price: Math.floor(Math.random() * 200),
-  },
-  {
-    name: `Double-decker bus ride`,
-    type: `sightseeing`,
-    category: `sightseeing`,
-    price: Math.floor(Math.random() * 200),
-  },
-  {
-    name: `Order transfer`,
-    type: `transport`,
-    category: [`check-In`, `flight`],
-    price: Math.floor(Math.random() * 200),
-  },
-  {
-    name: `Order excursion with a guide`,
-    type: `seats`,
-    category: [`check-In`, `sightseeing`],
-    price: Math.floor(Math.random() * 200),
-  },
-];
+const EVENT_OFFERS = {
+  luggage: `Add luggage`,
+  meal: `Add meal`,
+  comfort: `Switch to comfort`,
+  seats: `Choose seats`,
+  tickets: `Book tickets`,
+  lunch: `Lunch in the city`,
+  guide: `Excursion with a guide`,
+  taxi: `Child safety seat`,
+  room: `Order room service`,
+  checkout: `Late checkout`,
+  transfer: `Airport transfer`,
+  breakfast: `Order breakfast`,
+  train: `Travel by train`,
+  rent: `Rent a car`,
+  transport: `Order a taxi`,
+};
 
 const SortTypes = {
   EVENT: `event`,
@@ -342,12 +267,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const OFFERS_AMOUNT = 3;
+const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
+
+const TEXT = [
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.`,
+  `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
+  `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`,
+];
 
 
 const generateCities = () => {
-  const randomIndex = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, _const__WEBPACK_IMPORTED_MODULE_1__["CITIES"].length - 1);
+  const randomIndex = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, CITIES.length - 1);
 
-  return _const__WEBPACK_IMPORTED_MODULE_1__["CITIES"][randomIndex];
+  return CITIES[randomIndex];
 };
 
 const generateEndDate = (eventStart) => {
@@ -363,9 +295,9 @@ const generateStartDate = () => {
 };
 
 const generateDescription = () => {
-  const randomIndex = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, _const__WEBPACK_IMPORTED_MODULE_1__["TEXT"].length - 1);
+  const randomIndex = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, TEXT.length - 1);
 
-  return _const__WEBPACK_IMPORTED_MODULE_1__["TEXT"][randomIndex];
+  return TEXT[randomIndex];
 };
 
 
@@ -386,6 +318,21 @@ const generateEventType = () => {
   return _const__WEBPACK_IMPORTED_MODULE_1__["EVENT_TYPES"][randomIndex];
 };
 
+const generateOffers = () => {
+  const offers = [];
+
+  for (const offerType of Object.keys(_const__WEBPACK_IMPORTED_MODULE_1__["EVENT_OFFERS"])) {
+    offers.push({
+      type: offerType,
+      name: _const__WEBPACK_IMPORTED_MODULE_1__["EVENT_OFFERS"][offerType],
+      price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
+      isChecked: Math.random() > 0.5,
+    });
+  }
+
+  return Object(_util__WEBPACK_IMPORTED_MODULE_0__["shuffleArray"])(offers).slice(0, Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, OFFERS_AMOUNT));
+};
+
 
 const generateEvent = () => {
   const eventStart = generateStartDate();
@@ -397,6 +344,7 @@ const generateEvent = () => {
   const description = generateDescription();
   const photos = generatePhotos();
   const price = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150);
+  const offers = generateOffers();
 
   return {
     eventStart,
@@ -407,8 +355,7 @@ const generateEvent = () => {
     isFavorite,
     description,
     photos,
-    offers: Object(_util__WEBPACK_IMPORTED_MODULE_0__["shuffleArray"])(_const__WEBPACK_IMPORTED_MODULE_1__["EVENT_OFFERS"].filter((offer) => offer.category.includes(eventType))).slice(0, Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, OFFERS_AMOUNT)),
-    isChecked: Math.random() > 0.5,
+    offers,
     price
   };
 };
@@ -644,7 +591,7 @@ const createEditEventTemplate = (event = {}) => {
                     <span class="visually-hidden">Open event</span>
                   </button>
                 </header>
-                ${(offers.length || description.lenght) ? `
+                ${(offers.length || description.length) ? `
 
               <section class="event__details">
                   ${offers.length ? `
@@ -729,14 +676,14 @@ const createOffers = (offers) => {
 };
 
 const getTimeDiff = (start, end) => {
+  const MS_IN_MINUTE = 60000;
   const timeDiff = end - start;
-  const msInMinute = 60000;
-  const msInHour = msInMinute * 60;
-  const msInDay = 24 * msInMinute * 60;
+  const msInHour = MS_IN_MINUTE * 60;
+  const msInDay = 24 * MS_IN_MINUTE * 60;
 
   const days = Math.floor(timeDiff / msInDay);
   const hours = Math.floor((timeDiff - days * msInDay) / msInHour);
-  const minutes = Math.floor((timeDiff - days * msInDay - hours * msInHour) / msInMinute);
+  const minutes = Math.floor((timeDiff - days * msInDay - hours * msInHour) / MS_IN_MINUTE);
 
   return `${days > 0 ? `${days}D` : ``} ${hours > 0 ? `${hours}H` : `00H`} ${minutes > 0 ? `${minutes}M` : `00M`}`;
 };
