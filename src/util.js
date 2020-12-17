@@ -1,5 +1,5 @@
-import {TRANSFER_EVENTS, RenderPosition} from "./const.js";
-import dayjs from "dayjs";
+import {TRANSFER_EVENTS, RenderPosition} from './const.js';
+import dayjs from 'dayjs';
 
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);

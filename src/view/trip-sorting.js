@@ -1,5 +1,5 @@
-import {createElement} from "../util";
-import {SortTypes} from "../const";
+import {createElement} from '../util';
+import {SortTypes} from '../const';
 
 
 const createTripSortingTemplate = () => {

@@ -49,19 +49,6 @@ const generateEventType = () => {
   return EVENT_TYPES[randomIndex];
 };
 
-const generateOffers = () => {
-  const offers = [];
-
-  for (const offerType of Object.keys(EVENT_OFFERS)) {
-    offers.push({
-      type: offerType,
-      name: EVENT_OFFERS[offerType],
-      price: getRandomInteger(3, 150),
-      isChecked: Math.random() > 0.5,
-    });
-  }
-  return shuffleArray(offers).slice(0, getRandomInteger(0, OFFERS_AMOUNT));
-};
 
 export const generateEvent = () => {
   const eventStart = generateStartDate();
@@ -69,11 +56,10 @@ export const generateEvent = () => {
   const travelDuration = dayjs(eventEnd).diff(eventStart, `minutes`);
   const city = generateCities();
   const eventType = generateEventType();
-  const price = getRandomInteger(3, 150);
   const isFavorite = Boolean(getRandomInteger(0, 1));
   const description = generateDescription();
   const photos = generatePhotos();
-  const offers = generateOffers();
+  const price = getRandomInteger(3, 150);
 
   return {
     eventStart,
@@ -84,8 +70,9 @@ export const generateEvent = () => {
     isFavorite,
     description,
     photos,
-    price,
-    offers,
+    offers: shuffleArray(EVENT_OFFERS.filter((offer) => offer.category.includes(eventType))).slice(0, getRandomInteger(0, OFFERS_AMOUNT)),
+    isChecked: Math.random() > 0.5,
+    price
   };
 };
 

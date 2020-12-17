@@ -2,11 +2,9 @@ import TripInfoView from './view/trip-info';
 import SiteMenuView from './view/site-menu';
 import TripFiltersView from './view/trip-filters';
 import ListView from './view/list';
-//  import EmptyListView from './view/empty-list';
 import SortingView from './view/trip-sorting';
 import EditEventView from './view/edit-event';
 import EventView from './view/event';
-
 import {generateEvent} from './mock/event';
 import {render} from './util';
 import {RenderPosition} from './const';
@@ -14,6 +12,7 @@ import {RenderPosition} from './const';
 const EVENTS_AMOUNT = 18;
 
 const events = new Array(EVENTS_AMOUNT).fill().map(generateEvent);
+
 
 const siteMainElement = document.querySelector(`.page-body`);
 const tripMainElement = siteMainElement.querySelector(`.trip-main`);
@@ -24,7 +23,7 @@ const eventsListComponent = new ListView();
 const renderEvent = (eventsListElement, eventElement) => {
   const eventComponent = new EventView(eventElement).getElement();
   const eventEditComponent = new EditEventView(eventElement).getElement();
-  console.log(eventComponent);
+
 
   const replaceCardToForm = () => {
     eventsListElement.replaceChild(eventEditComponent, eventComponent);
