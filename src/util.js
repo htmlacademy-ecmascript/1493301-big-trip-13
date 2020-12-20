@@ -32,17 +32,20 @@ export const humaneEditEventTime = (dueDate) => {
   return dayjs(dueDate).format(`DD/MM/YY HH:mm`);
 };
 
-export const shuffleArray = (array) => {
-  const [...arrayCopy] = array;
 
-  for (let i = arrayCopy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i);
-    const temp = arrayCopy[i];
-    arrayCopy[i] = arrayCopy[j];
-    arrayCopy[j] = temp;
+export const getRandomElement = (array) => {
+  const rand = Math.floor(Math.random() * array.length);
+  return array[rand];
+};
+
+export const getRandomArray = (array, count) => {
+  let arrayCount = getRandomInteger(1, count);
+  let randomArray = [];
+  for (let i = 0; i < arrayCount; i++) {
+    randomArray[i] = getRandomElement(array);
   }
 
-  return arrayCopy;
+  return Array.from(new Set(randomArray));
 };
 
 export const createPrepositions = (type) => {
