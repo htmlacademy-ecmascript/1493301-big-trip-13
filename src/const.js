@@ -1,55 +1,48 @@
-export const EVENT_TYPES = [
-  `taxi`,
-  `bus`,
-  `train`,
-  `ship`,
-  `transport`,
-  `drive`,
-  `flight`,
-  `check-In`,
-  `sightseeing`,
-  `restaurant`,
+export const EVENT_TYPES = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`, `check-in`, `sightseeing`, `restaurant`];
+
+export const TRANSFER_EVENTS = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+
+export const EVENT_OFFERS = [
+`Add luggage`,
+`Add meal`,
+`Switch to comfort`,
+`Choose seats`,
+`Book tickets`,
+`Lunch in the city`,
+`Excursion with a guide`,
+`Child safety seat`,
+`Order room service`,
+`Late checkout`,
+`Airport transfer`,
+`Add breakfast`,
+`Travel by train`,
+`Rent a car`,
+`Order a taxi`,
+`Order VIP service`,
+`Upgrade to business class`
 ];
 
-export const CITIES = [
-  `Luxembourg`,
-  `Trier`,
-  `Paris`,
-  `Bernkastel-Kues`,
-  `Strasbourg`,
-  `Aachen`,
-  `Barcelona`,
-  `Sant Pol de Mar`,
-  `London`,
-  `Dublin`,
-  `Cabo da Roca`,
-  `Geneva`,
-  `Chamonix`,
-  `Amsterdam`
-];
 
-export const TEXT = [
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.`,
-  `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
-  `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`,
-];
-
-export const EVENT_OFFERS = {
-  luggage: `Add luggage`,
-  meal: `Add meal`,
-  comfort: `Switch to comfort`,
-  seats: `Choose seats`,
-  tickets: `Book tickets`,
-  lunch: `Lunch in the city`,
-  guide: `Excursion with a guide`,
-  kids: `Child safety seat`,
-  room: `Order room service`,
-  checkout: `Late checkout`,
-  transfer: `Airport transfer`,
-  breakfast: `Order breakfast`,
-  train: `Travel by train`,
-  rent: `Rent a car`,
-  taxi: `Order a taxi`,
+export const SortTypes = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`
 };
 
+export const RenderPosition = {
+  BEFOREBEGIN: `beforebegin`,
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+export const FilterTypes = {
+  EVERYTHING: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
+};
+
+export const MenuTabs = {
+  TABLE: `table`,
+  STATS: `stats`
+};
 
