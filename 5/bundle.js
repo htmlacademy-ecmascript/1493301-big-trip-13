@@ -102,17 +102,42 @@
 /*!**********************!*\
   !*** ./src/const.js ***!
   \**********************/
-/*! exports provided: TRANSFER_EVENTS, SortTypes, RenderPosition, FilterTypes, MenuTabs */
+/*! exports provided: EVENT_TYPES, TRANSFER_EVENTS, EVENT_OFFERS, SortTypes, RenderPosition, FilterTypes, MenuTabs */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EVENT_TYPES", function() { return EVENT_TYPES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TRANSFER_EVENTS", function() { return TRANSFER_EVENTS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EVENT_OFFERS", function() { return EVENT_OFFERS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SortTypes", function() { return SortTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RenderPosition", function() { return RenderPosition; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FilterTypes", function() { return FilterTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MenuTabs", function() { return MenuTabs; });
+const EVENT_TYPES = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`, `check-in`, `sightseeing`, `restaurant`];
+
 const TRANSFER_EVENTS = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+
+const EVENT_OFFERS = [
+`Add luggage`,
+`Add meal`,
+`Switch to comfort`,
+`Choose seats`,
+`Book tickets`,
+`Lunch in the city`,
+`Excursion with a guide`,
+`Child safety seat`,
+`Order room service`,
+`Late checkout`,
+`Airport transfer`,
+`Add breakfast`,
+`Travel by train`,
+`Rent a car`,
+`Order a taxi`,
+`Order VIP service`,
+`Upgrade to business class`
+];
+
 
 const SortTypes = {
   EVENT: `event`,
@@ -235,10 +260,11 @@ renderEventsList();
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateEvent", function() { return generateEvent; });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./src/util.js");
-/* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
-/* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(dayjs__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const */ "./src/const.js");
+/* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
+/* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(dayjs__WEBPACK_IMPORTED_MODULE_2__);
 
-//  import {EVENT_OFFERS} from '../const';
+
 
 
 
@@ -262,7 +288,7 @@ const generateCities = () => {
 };
 
 const generateEndDate = (eventStart) => {
-  return dayjs__WEBPACK_IMPORTED_MODULE_1___default()(eventStart).add(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 48), `hours`).add(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 60), `minutes`).toDate();
+  return dayjs__WEBPACK_IMPORTED_MODULE_2___default()(eventStart).add(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 48), `hours`).add(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 60), `minutes`).toDate();
 };
 
 
@@ -270,7 +296,7 @@ const generateStartDate = () => {
   const daysGap = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(-7, 7);
   const hourGap = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(-24, 24);
   const minGap = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(-59, 59);
-  return dayjs__WEBPACK_IMPORTED_MODULE_1___default()().add(daysGap, `day`).add(hourGap, `hour`).add(minGap, `minute`).toDate();
+  return dayjs__WEBPACK_IMPORTED_MODULE_2___default()().add(daysGap, `day`).add(hourGap, `hour`).add(minGap, `minute`).toDate();
 };
 
 const generateDescription = () => {
@@ -278,60 +304,6 @@ const generateDescription = () => {
 
   return TEXT[randomIndex];
 };
-
-const EVENT_OFFERS = [
-  {
-    name: `Add luggage`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  },
-  {
-    name: `Switch to comfort`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-
-  },
-  {
-    name: `Rent a car`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  },
-  {
-    name: `Book tickets`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  },
-  {
-    name: `Lunch in city`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  },
-  {
-    name: `Order transfer`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  },
-  {
-    name: `Order excursion with a guide`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  },
-  {
-    name: `Order Uber`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  },
-  {
-    name: `Travel by train`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  },
-  {
-    name: `Add meal`,
-    price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
-    isChecked: Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 2)),
-  }
-];
 
 
 const generatePhotos = () => {
@@ -346,92 +318,58 @@ const generatePhotos = () => {
 };
 
 
+const generateValue = (range) => {
+  const randomIndex = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, range.length - 1);
+
+  return range[randomIndex];
+};
+
 const generateOffers = () => {
-  let offers = [];
-  const isOffers = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, OFFERS_AMOUNT);
-  if (isOffers) {
-    offers = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomArray"])(EVENT_OFFERS, OFFERS_AMOUNT)
-        .map(function (offer) {
-          return Object.assign({}, offer);
-        });
-  }
+  const offers = new Map();
+  _const__WEBPACK_IMPORTED_MODULE_1__["EVENT_TYPES"].forEach((eventType) => {
+    const relatedDeals = [];
+    for (let i = 0; i < OFFERS_AMOUNT; i++) {
+      relatedDeals.push({
+        type: eventType,
+        name: _const__WEBPACK_IMPORTED_MODULE_1__["EVENT_OFFERS"][Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, _const__WEBPACK_IMPORTED_MODULE_1__["EVENT_OFFERS"].length - 1)],
+        id: generateId(),
+        price: Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150),
+      });
+    }
+    offers.set(eventType, relatedDeals.slice(0, Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, OFFERS_AMOUNT)));
+  });
   return offers;
 };
-
-const EVENT_TYPES = {
-  taxi: {
-    name: `taxi`,
-    offers: generateOffers()
-  },
-  bus: {
-    name: `bus`,
-    offers: generateOffers()
-  },
-  train: {
-    name: `train`,
-    offers: generateOffers()
-  },
-  ship: {
-    name: `ship`,
-    offers: generateOffers()
-  },
-  transport: {
-    name: `transport`,
-    offers: generateOffers()
-  },
-  drive: {
-    name: `drive`,
-    offers: generateOffers()
-  },
-  flight: {
-    name: `flight`,
-    offers: generateOffers()
-  },
-  [`check-in`]: {
-    name: `check-in`,
-    offers: generateOffers()
-  },
-  sightseeing: {
-    name: `sightseeing`,
-    offers: generateOffers()
-  },
-  restaurant: {
-    name: `restaurant`,
-    offers: generateOffers()
-  }
-};
-
 
 const generateEvent = () => {
   const eventStart = generateStartDate();
   const eventEnd = generateEndDate(eventStart);
-  const travelDuration = dayjs__WEBPACK_IMPORTED_MODULE_1___default()(eventEnd).diff(eventStart, `minutes`);
+  const travelDuration = dayjs__WEBPACK_IMPORTED_MODULE_2___default()(eventEnd).diff(eventStart, `minutes`);
   const city = generateCities();
-  const eventType = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomElement"])(Object.keys(EVENT_TYPES));
+  const eventType = generateValue(_const__WEBPACK_IMPORTED_MODULE_1__["EVENT_TYPES"]);
   const isFavorite = Boolean(Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(0, 1));
   const description = generateDescription();
   const photos = generatePhotos();
   const price = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getRandomInteger"])(3, 150);
+  const offers = generateOffers();
+  const relatedDeals = offers.get(eventType);
+  const id = generateId();
 
   return {
     eventStart,
     eventEnd,
+    id,
     travelDuration,
     city,
-    price,
-    id: generateId(),
+    eventType,
     isFavorite,
-    destination: {
-      description,
-      photos
-    },
-    event: {
-      eventType: EVENT_TYPES[eventType].name,
-      offers: EVENT_TYPES[eventType].offers
-    }
-
+    description,
+    photos,
+    offers: relatedDeals,
+    price,
   };
 };
+
 
 
 /***/ }),
@@ -440,7 +378,7 @@ const generateEvent = () => {
 /*!*********************!*\
   !*** ./src/util.js ***!
   \*********************/
-/*! exports provided: createElement, getRandomInteger, capitalize, humaneEventDate, humaneEventTime, humaneEditEventTime, getRandomElement, getRandomArray, createPrepositions, render, renderTemplate */
+/*! exports provided: createElement, getRandomInteger, capitalize, humaneEventDate, humaneEventTime, humaneEditEventTime, createPrepositions, render, renderTemplate */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -451,8 +389,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "humaneEventDate", function() { return humaneEventDate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "humaneEventTime", function() { return humaneEventTime; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "humaneEditEventTime", function() { return humaneEditEventTime; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomElement", function() { return getRandomElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomArray", function() { return getRandomArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPrepositions", function() { return createPrepositions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "renderTemplate", function() { return renderTemplate; });
@@ -493,22 +429,6 @@ const humaneEditEventTime = (dueDate) => {
   return dayjs__WEBPACK_IMPORTED_MODULE_1___default()(dueDate).format(`DD/MM/YY HH:mm`);
 };
 
-
-const getRandomElement = (array) => {
-  const rand = Math.floor(Math.random() * array.length);
-  return array[rand];
-};
-
-const getRandomArray = (array, count) => {
-  let arrayCount = getRandomInteger(1, count);
-  let randomArray = [];
-  for (let i = 0; i < arrayCount; i++) {
-    randomArray[i] = getRandomElement(array);
-  }
-
-  return Array.from(new Set(randomArray));
-};
-
 const createPrepositions = (type) => {
   return _const_js__WEBPACK_IMPORTED_MODULE_0__["TRANSFER_EVENTS"].includes(type) ? `to` : `in`;
 };
@@ -542,25 +462,22 @@ const renderTemplate = (container, template, place) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EditEventView; });
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./src/util.js");
+/* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../const */ "./src/const.js");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util */ "./src/util.js");
+
 
 
 
 const createEditEventTemplate = (event = {}) => {
   const {
     city,
-    id,
-    event: {
-      eventType,
-      offers
-    },
+    eventType,
     eventStart,
     eventEnd,
     price,
-    destination: {
-      description,
-      photos
-    }
+    offers,
+    description,
+    photos
   } = event;
 
   const createDetailsSection = () => {
@@ -586,7 +503,7 @@ const createEditEventTemplate = (event = {}) => {
   };
 
   const offerTemplate = (offer) => {
-    const {name, isChecked} = offer;
+    const {id, name, isChecked} = offer;
     return ` <div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``}>
                         <label class="event__offer-label" for="event-offer-${id}">
@@ -603,9 +520,20 @@ const createEditEventTemplate = (event = {}) => {
     `;
   };
 
+  const createEventTypeItems = () => {
+    return `
+    ${_const__WEBPACK_IMPORTED_MODULE_0__["EVENT_TYPES"].map(({type, name, image, id}) => `
+      <div class="event__type-item">
+          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}">
+          <label class="event__type-label  event__type-label--${image}" for="event-type-${type}-${id}">${name}</label>
+      </div>`).join(``)}
+    `;
+  };
+
   const offersTemplate = createOffers(offers);
   const detailsSection = createDetailsSection();
   const photosSection = createPhotosSection();
+  const eventTypeItems = createEventTypeItems();
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -620,21 +548,14 @@ const createEditEventTemplate = (event = {}) => {
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
-
-
-
-                        <div class="event__type-item">
-                          <input id="event-type-${eventType.toLowerCase()}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}">
-                          <label class="event__type-label  event__type-label--${eventType.toLowerCase()}" for="event-type-bus-1">${name}</label>
-                        </div>
-
+                        ${eventTypeItems}
                         </fieldset>
                     </div>
                     </div>
 
                     <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                      ${Object(_util__WEBPACK_IMPORTED_MODULE_0__["capitalize"])(eventType)} ${Object(_util__WEBPACK_IMPORTED_MODULE_0__["createPrepositions"])(eventType)}
+                      ${Object(_util__WEBPACK_IMPORTED_MODULE_1__["capitalize"])(eventType)}  ${Object(_util__WEBPACK_IMPORTED_MODULE_1__["createPrepositions"])(eventType)}
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
                     <datalist id="destination-list-1">
@@ -647,10 +568,10 @@ const createEditEventTemplate = (event = {}) => {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${Object(_util__WEBPACK_IMPORTED_MODULE_0__["humaneEditEventTime"])(eventStart)}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${Object(_util__WEBPACK_IMPORTED_MODULE_1__["humaneEditEventTime"])(eventStart)}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${Object(_util__WEBPACK_IMPORTED_MODULE_0__["humaneEditEventTime"])(eventEnd)}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${Object(_util__WEBPACK_IMPORTED_MODULE_1__["humaneEditEventTime"])(eventEnd)}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -711,7 +632,7 @@ class EditEventView {
 
   getElement() {
     if (!this._element) {
-      this._element = Object(_util__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
+      this._element = Object(_util__WEBPACK_IMPORTED_MODULE_1__["createElement"])(this.getTemplate());
     }
     return this._element;
   }
@@ -735,6 +656,7 @@ class EditEventView {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EventView; });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./src/util.js");
+
 
 
 
@@ -764,19 +686,18 @@ const getTimeDiff = (start, end) => {
 
 const createEventTemplate = (event) => {
   const {
-    event: {
-      eventType,
-      offers
-    },
+    eventType,
     city,
     eventStart,
     eventEnd,
     isFavorite,
+    offers,
     price
   } = event;
 
 
   const duration = getTimeDiff(eventStart, eventEnd);
+
   const offersTemplate = offers ? createOffers(offers) : ``;
 
   const favoriteClassName = isFavorite
@@ -803,7 +724,6 @@ const createEventTemplate = (event) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-
                  ${offersTemplate}
                 </ul>
                 <button class="event__favorite-btn ${favoriteClassName}" type="button">
