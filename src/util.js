@@ -32,22 +32,6 @@ export const humaneEditEventTime = (dueDate) => {
   return dayjs(dueDate).format(`DD/MM/YY HH:mm`);
 };
 
-
-export const getRandomElement = (array) => {
-  const rand = Math.floor(Math.random() * array.length);
-  return array[rand];
-};
-
-export const getRandomArray = (array, count) => {
-  let arrayCount = getRandomInteger(1, count);
-  let randomArray = [];
-  for (let i = 0; i < arrayCount; i++) {
-    randomArray[i] = getRandomElement(array);
-  }
-
-  return Array.from(new Set(randomArray));
-};
-
 export const createPrepositions = (type) => {
   return TRANSFER_EVENTS.includes(type) ? `to` : `in`;
 };

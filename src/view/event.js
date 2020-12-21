@@ -1,6 +1,7 @@
 import {humaneEventDate, humaneEventTime, createPrepositions} from '../util';
 import {createElement} from '../util';
 
+
 const createOffers = (offers) => {
   return `<h4 class="visually-hidden">Offers:</h4>
   ${offers.map(({name, price}) => {
@@ -27,19 +28,18 @@ const getTimeDiff = (start, end) => {
 
 const createEventTemplate = (event) => {
   const {
-    event: {
-      eventType,
-      offers
-    },
+    eventType,
     city,
     eventStart,
     eventEnd,
     isFavorite,
+    offers,
     price
   } = event;
 
 
   const duration = getTimeDiff(eventStart, eventEnd);
+
   const offersTemplate = offers ? createOffers(offers) : ``;
 
   const favoriteClassName = isFavorite
@@ -66,7 +66,6 @@ const createEventTemplate = (event) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-
                  ${offersTemplate}
                 </ul>
                 <button class="event__favorite-btn ${favoriteClassName}" type="button">

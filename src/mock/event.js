@@ -1,5 +1,5 @@
-import {getRandomInteger, getRandomArray, getRandomElement} from '../util';
-//  import {EVENT_OFFERS} from '../const';
+import {getRandomInteger} from '../util';
+import {EVENT_TYPES, EVENT_OFFERS} from '../const';
 
 
 import dayjs from 'dayjs';
@@ -40,60 +40,6 @@ const generateDescription = () => {
   return TEXT[randomIndex];
 };
 
-const EVENT_OFFERS = [
-  {
-    name: `Add luggage`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  },
-  {
-    name: `Switch to comfort`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-
-  },
-  {
-    name: `Rent a car`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  },
-  {
-    name: `Book tickets`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  },
-  {
-    name: `Lunch in city`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  },
-  {
-    name: `Order transfer`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  },
-  {
-    name: `Order excursion with a guide`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  },
-  {
-    name: `Order Uber`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  },
-  {
-    name: `Travel by train`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  },
-  {
-    name: `Add meal`,
-    price: getRandomInteger(3, 150),
-    isChecked: Boolean(getRandomInteger(0, 2)),
-  }
-];
-
 
 const generatePhotos = () => {
   const photos = [];
@@ -107,89 +53,55 @@ const generatePhotos = () => {
 };
 
 
+const generateValue = (range) => {
+  const randomIndex = getRandomInteger(0, range.length - 1);
+
+  return range[randomIndex];
+};
+
 const generateOffers = () => {
-  let offers = [];
-  const isOffers = getRandomInteger(0, OFFERS_AMOUNT);
-  if (isOffers) {
-    offers = getRandomArray(EVENT_OFFERS, OFFERS_AMOUNT)
-        .map(function (offer) {
-          return Object.assign({}, offer);
-        });
-  }
+  const offers = new Map();
+  EVENT_TYPES.forEach((eventType) => {
+    const relatedDeals = [];
+    for (let i = 0; i < OFFERS_AMOUNT; i++) {
+      relatedDeals.push({
+        type: eventType,
+        name: EVENT_OFFERS[getRandomInteger(0, EVENT_OFFERS.length - 1)],
+        id: generateId(),
+        price: getRandomInteger(3, 150),
+      });
+    }
+    offers.set(eventType, relatedDeals.slice(0, getRandomInteger(0, OFFERS_AMOUNT)));
+  });
   return offers;
 };
-
-const EVENT_TYPES = {
-  taxi: {
-    name: `taxi`,
-    offers: generateOffers()
-  },
-  bus: {
-    name: `bus`,
-    offers: generateOffers()
-  },
-  train: {
-    name: `train`,
-    offers: generateOffers()
-  },
-  ship: {
-    name: `ship`,
-    offers: generateOffers()
-  },
-  transport: {
-    name: `transport`,
-    offers: generateOffers()
-  },
-  drive: {
-    name: `drive`,
-    offers: generateOffers()
-  },
-  flight: {
-    name: `flight`,
-    offers: generateOffers()
-  },
-  [`check-in`]: {
-    name: `check-in`,
-    offers: generateOffers()
-  },
-  sightseeing: {
-    name: `sightseeing`,
-    offers: generateOffers()
-  },
-  restaurant: {
-    name: `restaurant`,
-    offers: generateOffers()
-  }
-};
-
 
 export const generateEvent = () => {
   const eventStart = generateStartDate();
   const eventEnd = generateEndDate(eventStart);
   const travelDuration = dayjs(eventEnd).diff(eventStart, `minutes`);
   const city = generateCities();
-  const eventType = getRandomElement(Object.keys(EVENT_TYPES));
+  const eventType = generateValue(EVENT_TYPES);
   const isFavorite = Boolean(getRandomInteger(0, 1));
   const description = generateDescription();
   const photos = generatePhotos();
   const price = getRandomInteger(3, 150);
+  const offers = generateOffers();
+  const relatedDeals = offers.get(eventType);
+  const id = generateId();
 
   return {
     eventStart,
     eventEnd,
+    id,
     travelDuration,
     city,
-    price,
-    id: generateId(),
+    eventType,
     isFavorite,
-    destination: {
-      description,
-      photos
-    },
-    event: {
-      eventType: EVENT_TYPES[eventType].name,
-      offers: EVENT_TYPES[eventType].offers
-    }
-
+    description,
+    photos,
+    offers: relatedDeals,
+    price,
   };
 };
+
