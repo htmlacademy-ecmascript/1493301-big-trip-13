@@ -69,7 +69,7 @@ const generateOffers = () => {
         name: EVENT_OFFERS[getRandomInteger(0, EVENT_OFFERS.length - 1)],
         id: generateId(),
         price: getRandomInteger(3, 150),
-        isChecked: Boolean(getRandomInteger(0,1))
+        isChecked: Boolean(getRandomInteger(0, 1))
       });
     }
     offers.set(eventType, relatedDeals.slice(0, getRandomInteger(0, OFFERS_AMOUNT)));
