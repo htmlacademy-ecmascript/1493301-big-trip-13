@@ -11,6 +11,7 @@ import {render} from './util';
 import {RenderPosition} from './const';
 
 const EVENTS_AMOUNT = 18;
+const ESC = `Escape`;
 
 const events = new Array(EVENTS_AMOUNT).fill().map(generateEvent);
 
@@ -24,6 +25,7 @@ const eventsListComponent = new ListView();
 const renderEvent = (eventsListElement, eventElement) => {
   const eventComponent = new EventView(eventElement).getElement();
   const eventEditComponent = new EditEventView(eventElement).getElement();
+  const eventEdit = eventEditComponent.querySelector(`.event--edit`);
 
 
   const replaceCardToForm = () => {
@@ -45,12 +47,12 @@ const renderEvent = (eventsListElement, eventElement) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
-  eventEditComponent.querySelector(`.event--edit`).addEventListener(`submit`, closeCard);
+  eventEdit.addEventListener(`submit`, closeCard);
 
-  eventEditComponent.querySelector(`.event--edit .event__rollup-btn`).addEventListener(`click`, closeCard);
+  eventEdit.querySelector(`.event__rollup-btn`).addEventListener(`click`, closeCard);
 
   const onEscKeyDown = (evt) => {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
+    if (evt.key === ESC) {
       evt.preventDefault();
       replaceFormToCard();
       document.removeEventListener(`keydown`, onEscKeyDown);
