@@ -1,11 +1,10 @@
 import {createElement} from '../util';
 
 const createEmptyListTemplate = () => {
-  return `
-  <p class="trip-events__msg">Click New Event to create your first point</p>`;
+  return `<p class="trip-events__msg">Click New Event to create your first point</p>`;
 };
 
-export default class EmptyList {
+export default class EmptyListView {
   constructor() {
     this._element = null;
   }
