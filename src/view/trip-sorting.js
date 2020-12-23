@@ -1,4 +1,4 @@
-import {createElement} from '../util';
+import AbstractView from './abstract';
 import {SortTypes} from '../const';
 
 
@@ -33,25 +33,9 @@ const createTripSortingTemplate = () => {
   );
 };
 
-export default class SortingView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SortingView extends AbstractView {
   getTemplate() {
     return createTripSortingTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

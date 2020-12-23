@@ -1,4 +1,4 @@
-import {createElement} from '../util';
+import AbstractView from './abstract';
 import {FilterTypes} from '../const';
 
 const createTripFiltersTemplate = () => {
@@ -19,25 +19,8 @@ const createTripFiltersTemplate = () => {
   </form>`;
 };
 
-export default class TripFiltersView {
-  constructor(filter) {
-    this._filter = filter;
-    this._element = null;
-  }
-
+export default class TripFiltersView extends AbstractView {
   getTemplate() {
-    return createTripFiltersTemplate(this._filter);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createTripFiltersTemplate();
   }
 }

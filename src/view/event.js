@@ -1,5 +1,5 @@
-import {humaneEventDate, humaneEventTime, createPrepositions} from '../util';
-import {createElement} from '../util';
+import AbstractView from './abstract';
+import {humaneEventDate, humaneEventTime, createPrepositions} from '../util/event';
 
 
 const createOffers = (offers) => {
@@ -82,24 +82,24 @@ const createEventTemplate = (event) => {
             `;
 };
 
-export default class EventView {
+export default class EventView extends AbstractView {
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickEditHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }

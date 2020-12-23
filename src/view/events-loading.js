@@ -1,4 +1,4 @@
-import {createElement} from '../util';
+import AbstractView from './abstract';
 
 const createEventsLoadingTemplate = () => {
   return `
@@ -6,24 +6,8 @@ const createEventsLoadingTemplate = () => {
 };
 
 
-export default class LoadingView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class LoadingView extends AbstractView {
   getTemplate() {
     return createEventsLoadingTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
