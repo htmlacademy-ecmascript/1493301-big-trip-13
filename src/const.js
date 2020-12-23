@@ -3,23 +3,23 @@ export const EVENT_TYPES = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`
 export const TRANSFER_EVENTS = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
 
 export const EVENT_OFFERS = [
-`Add luggage`,
-`Add meal`,
-`Switch to comfort`,
-`Choose seats`,
-`Book tickets`,
-`Lunch in the city`,
-`Excursion with a guide`,
-`Child safety seat`,
-`Order room service`,
-`Late checkout`,
-`Airport transfer`,
-`Add breakfast`,
-`Travel by train`,
-`Rent a car`,
-`Order a taxi`,
-`Order VIP service`,
-`Upgrade to business class`
+  `Add luggage`,
+  `Add meal`,
+  `Switch to comfort`,
+  `Choose seats`,
+  `Book tickets`,
+  `Lunch in the city`,
+  `Excursion with a guide`,
+  `Child safety seat`,
+  `Order room service`,
+  `Late checkout`,
+  `Airport transfer`,
+  `Add breakfast`,
+  `Travel by train`,
+  `Rent a car`,
+  `Order a taxi`,
+  `Order VIP service`,
+  `Upgrade to business class`
 ];
 
 

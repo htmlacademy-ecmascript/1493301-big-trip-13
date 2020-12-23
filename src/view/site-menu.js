@@ -1,4 +1,5 @@
-import {createElement, capitalize} from '../util';
+import AbstractView from './abstract';
+import {capitalize} from '../util/global';
 import {MenuTabs} from '../const';
 
 
@@ -9,24 +10,9 @@ const createSiteMenuTemplate = () => {
   </nav>`;
 };
 
-export default class SiteMenuView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SiteMenuView extends AbstractView {
   getTemplate() {
     return createSiteMenuTemplate();
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
+

@@ -1,6 +1,8 @@
+import AbstractView from './abstract';
 import {EVENT_TYPES} from '../const';
-import {humaneEditEventTime, capitalize, createPrepositions} from '../util';
-import {createElement} from '../util';
+import {humaneEditEventTime, createPrepositions} from '../util/event';
+import {capitalize} from '../util/global';
+
 
 const createEditEventTemplate = (event = {}) => {
   const {
@@ -153,25 +155,29 @@ const createEditEventTemplate = (event = {}) => {
             `;
 };
 
-
-export default class EditEventView {
+export default class EditEventView extends AbstractView {
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createEditEventTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.submit();
   }
 
-  removeElement() {
-    this._element = null;
+  setSubmitFormHandler(callback) {
+    this._callback.submit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setArrowCardHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formSubmitHandler);
   }
 }
