@@ -1,5 +1,5 @@
 import {EVENT_TYPES, EVENT_OFFERS} from '../const';
-import {getRandomInteger} from "../util/global";
+import {getRandomInteger} from '../util/global';
 import dayjs from 'dayjs';
 
 const OFFERS_AMOUNT = 3;

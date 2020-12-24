@@ -86,20 +86,32 @@ export default class EventView extends AbstractView {
   constructor(event) {
     super();
     this._event = event;
-    this._clickHandler = this._clickHandler.bind(this);
+    this._clickEditHandler = this._clickEditHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventTemplate(this._event);
   }
 
-  _clickHandler(evt) {
+  _clickEditHandler(evt) {
     evt.preventDefault();
-    this._callback.click();
+    this._callback.clickEdit();
   }
 
   setClickEditHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
+    this._callback.clickEdit = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickEditHandler);
+  }
+
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickFavorite();
+  }
+
+  setClickFavoriteHandler(callback) {
+    this._callback.clickFavorite = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
   }
 }
