@@ -102,7 +102,7 @@
 /*!**********************!*\
   !*** ./src/const.js ***!
   \**********************/
-/*! exports provided: EVENT_TYPES, TRANSFER_EVENTS, EVENT_OFFERS, SortTypes, RenderPosition, FilterTypes, MenuTabs */
+/*! exports provided: EVENT_TYPES, TRANSFER_EVENTS, EVENT_OFFERS, SortTypes, ESC_BUTTON, OperatingMode, RenderPosition, FilterTypes, MenuTabs */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -111,6 +111,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TRANSFER_EVENTS", function() { return TRANSFER_EVENTS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EVENT_OFFERS", function() { return EVENT_OFFERS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SortTypes", function() { return SortTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ESC_BUTTON", function() { return ESC_BUTTON; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OperatingMode", function() { return OperatingMode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RenderPosition", function() { return RenderPosition; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FilterTypes", function() { return FilterTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MenuTabs", function() { return MenuTabs; });
@@ -143,6 +145,13 @@ const SortTypes = {
   EVENT: `event`,
   TIME: `time`,
   PRICE: `price`
+};
+
+const ESC_BUTTON = `Escape`;
+
+const OperatingMode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
 };
 
 const RenderPosition = {
@@ -336,12 +345,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const ESC = `Escape`;
-
-const Mode = {
-  DEFAULT: `DEFAULT`,
-  EDITING: `EDITING`
-};
 
 class PointPresenter {
   constructor(eventsListContainer, changeData, changeMode) {
@@ -350,15 +353,15 @@ class PointPresenter {
     this._changeData = changeData;
     this._changeMode = changeMode;
 
-    this._mode = Mode.DEFAULT;
+    this._mode = _const__WEBPACK_IMPORTED_MODULE_3__["OperatingMode"].DEFAULT;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
 
-    this._handleClickEdit = this._handleClickEdit.bind(this);
+    this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleClickFavorite = this._handleClickFavorite.bind(this);
-    this._handleClickArrow = this._handleClickArrow.bind(this);
+    this._handleArrowClick = this._handleArrowClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
 
   }
@@ -372,9 +375,9 @@ class PointPresenter {
     this._eventComponent = new _view_event__WEBPACK_IMPORTED_MODULE_0__["default"](routePoint);
     this._eventEditComponent = new _view_edit_event__WEBPACK_IMPORTED_MODULE_1__["default"](routePoint);
 
-    this._eventComponent.setClickEditHandler(this._handleClickEdit);
-    this._eventEditComponent.setArrowCardHandler(this._handleClickArrow);
-    this._eventEditComponent.setSubmitFormHandler(this._handleFormSubmit);
+    this._eventComponent.setEditClickHandler(this._handleEditClick);
+    this._eventEditComponent.setCardArrowHandler(this._handleArrowClick);
+    this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventComponent.setClickFavoriteHandler(this._handleClickFavorite);
 
 
@@ -383,11 +386,11 @@ class PointPresenter {
       return;
     }
 
-    if (this._mode === Mode.DEFAULT) {
+    if (this._mode === _const__WEBPACK_IMPORTED_MODULE_3__["OperatingMode"].DEFAULT) {
       Object(_util_render__WEBPACK_IMPORTED_MODULE_2__["replace"])(this._eventComponent, prevEventComponent);
     }
 
-    if (this._mode === Mode.EDITING) {
+    if (this._mode === _const__WEBPACK_IMPORTED_MODULE_3__["OperatingMode"].EDITING) {
       Object(_util_render__WEBPACK_IMPORTED_MODULE_2__["replace"])(this._eventEditComponent, prevEventEditComponent);
     }
 
@@ -401,7 +404,7 @@ class PointPresenter {
   }
 
   resetView() {
-    if (this._mode !== Mode.DEFAULT) {
+    if (this._mode !== _const__WEBPACK_IMPORTED_MODULE_3__["OperatingMode"].DEFAULT) {
       this._replaceFormToCard();
     }
   }
@@ -409,24 +412,24 @@ class PointPresenter {
   _replaceFormToCard() {
     Object(_util_render__WEBPACK_IMPORTED_MODULE_2__["replace"])(this._eventComponent, this._eventEditComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
-    this._mode = Mode.DEFAULT;
+    this._mode = _const__WEBPACK_IMPORTED_MODULE_3__["OperatingMode"].DEFAULT;
   }
 
   _replaceCardToForm() {
     Object(_util_render__WEBPACK_IMPORTED_MODULE_2__["replace"])(this._eventEditComponent, this._eventComponent);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
-    this._mode = Mode.EDITING;
+    this._mode = _const__WEBPACK_IMPORTED_MODULE_3__["OperatingMode"].EDITING;
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === ESC) {
+    if (evt.key === _const__WEBPACK_IMPORTED_MODULE_3__["ESC_BUTTON"]) {
       evt.preventDefault();
       this._replaceFormToCard();
     }
   }
 
-  _handleClickEdit() {
+  _handleEditClick() {
     this._replaceCardToForm();
   }
 
@@ -435,7 +438,7 @@ class PointPresenter {
     this._replaceFormToCard();
   }
 
-  _handleClickArrow() {
+  _handleArrowClick() {
     this._replaceFormToCard();
   }
 
@@ -472,9 +475,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _view_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../view/list */ "./src/view/list.js");
 /* harmony import */ var _view_trip_sorting__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../view/trip-sorting */ "./src/view/trip-sorting.js");
 /* harmony import */ var _point__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./point */ "./src/presenter/point.js");
-/* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../const */ "./src/const.js");
-/* harmony import */ var _util_render__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../util/render */ "./src/util/render.js");
-/* harmony import */ var _util_global__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../util/global */ "./src/util/global.js");
+/* harmony import */ var _util_render__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../util/render */ "./src/util/render.js");
+/* harmony import */ var _util_global__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../util/global */ "./src/util/global.js");
+/* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../const */ "./src/const.js");
 
 
 
@@ -505,17 +508,19 @@ class Route {
 
   init(routePoints) {
     this._routePoints = routePoints.slice();
+
+
     this._renderRoute();
   }
 
 
   _renderSort() {
-    Object(_util_render__WEBPACK_IMPORTED_MODULE_8__["render"])(this._routePointsContainer, this._sortingComponent, _const__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].AFTERBEGIN);
+    Object(_util_render__WEBPACK_IMPORTED_MODULE_7__["render"])(this._routePointsContainer, this._sortingComponent, _const__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].AFTERBEGIN);
   }
 
 
   _handlePointChange(updatePoint) {
-    this._routePoints = Object(_util_global__WEBPACK_IMPORTED_MODULE_9__["updateItem"])(this._routePoints, updatePoint);
+    this._routePoints = Object(_util_global__WEBPACK_IMPORTED_MODULE_8__["updateItem"])(this._routePoints, updatePoint);
     this._routePresenter[updatePoint.id].init(updatePoint);
   }
 
@@ -533,10 +538,10 @@ class Route {
   }
 
 
-  _renderPoint(eventElement) {
+  _renderPoint(points) {
     const routePresenter = new _point__WEBPACK_IMPORTED_MODULE_6__["default"](this._eventsListComponent, this._handlePointChange, this._handleModeChange);
-    routePresenter.init(eventElement);
-    this._routePresenter[eventElement.id] = routePresenter;
+    routePresenter.init(points);
+    this._routePresenter[points.id] = routePresenter;
   }
 
   _renderRoutePoints() {
@@ -546,22 +551,22 @@ class Route {
   }
 
   _renderListEmpty() {
-    Object(_util_render__WEBPACK_IMPORTED_MODULE_8__["render"])(this._routePointsContainer, this._listEmptyComponent, _const__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+    Object(_util_render__WEBPACK_IMPORTED_MODULE_7__["render"])(this._routePointsContainer, this._listEmptyComponent, _const__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
   }
 
   _renderRouteInfo() {
     const routeInfoComponent = new _view_trip_info__WEBPACK_IMPORTED_MODULE_0__["default"](this._routePoints);
-    Object(_util_render__WEBPACK_IMPORTED_MODULE_8__["render"])(this._routeMainContainer, routeInfoComponent, _const__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].AFTERBEGIN);
+    Object(_util_render__WEBPACK_IMPORTED_MODULE_7__["render"])(this._routeMainContainer, routeInfoComponent, _const__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].AFTERBEGIN);
   }
 
   _renderRouteControls() {
     const routeControlsElements = this._routeMainContainer.querySelector(`.trip-controls`);
-    Object(_util_render__WEBPACK_IMPORTED_MODULE_8__["render"])(routeControlsElements, this._menuComponent, _const__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].AFTERBEGIN);
-    Object(_util_render__WEBPACK_IMPORTED_MODULE_8__["render"])(routeControlsElements, this._filtersComponent, _const__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+    Object(_util_render__WEBPACK_IMPORTED_MODULE_7__["render"])(routeControlsElements, this._menuComponent, _const__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].AFTERBEGIN);
+    Object(_util_render__WEBPACK_IMPORTED_MODULE_7__["render"])(routeControlsElements, this._filtersComponent, _const__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
   }
 
   _renderPointsList() {
-    Object(_util_render__WEBPACK_IMPORTED_MODULE_8__["render"])(this._routePointsContainer, this._eventsListComponent, _const__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+    Object(_util_render__WEBPACK_IMPORTED_MODULE_7__["render"])(this._routePointsContainer, this._eventsListComponent, _const__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
   }
 
   _renderRoute() {
@@ -806,31 +811,58 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const offerTemplate = (offer) => {
+  const {id, name, price, isChecked} = offer;
+  return ` <div class="event__offer-selector">
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``}>
+                        <label class="event__offer-label" for="event-offer-${id}">
+                          <span class="event__offer-title">${name}</span>
+                          &plus;&euro;&nbsp;
+                          <span class="event__offer-price">${price}</span>
+                        </label>
+                      </div>`;
+};
+
+const createOffers = (offers) => {
+  return `
+    ${offers.map((offer) => offerTemplate(offer)).join(``)}
+    `;
+};
+
+const createEventTypeItems = () => {
+  return `
+  ${_const__WEBPACK_IMPORTED_MODULE_1__["EVENT_TYPES"].map(({id, type, name, image}) => `
+      <div class="event__type-item">
+          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}">
+          <label class="event__type-label  event__type-label--${image}" for="event-type-${type}-${id}">${name}</label>
+      </div>`).join(``)}
+    `;
+};
+
 const createEditEventTemplate = (event = {}) => {
   const {
     city,
     eventType,
     eventStart,
     eventEnd,
-    price,
     offers,
     description,
     photos,
-    id
+    id,
+    price
   } = event;
-
-  const createDetailsSection = () => {
-    const offersSection = createOffersSection();
-    return `
-    ${offersSection}
-    `;
-  };
-
 
   const createOffersSection = () => {
     return `
     ${offersTemplate}
-    `;
+  `;
+  };
+
+  const createDetailsSection = () => {
+    const offersSection = createOffersSection();
+    return `
+        ${offersSection}
+        `;
   };
 
   const createPhotosSection = () => {
@@ -838,34 +870,6 @@ const createEditEventTemplate = (event = {}) => {
     ${photos.map(({photoPath}) => `
       <img class="event__photo" src=${photoPath}" alt="Event photo">
     `).join(``)}
-    `;
-  };
-
-  const offerTemplate = (offer) => {
-    const {name, isChecked} = offer;
-    return ` <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``}>
-                        <label class="event__offer-label" for="event-offer-${id}">
-                          <span class="event__offer-title">${name}</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">${offer.price}</span>
-                        </label>
-                      </div>`;
-  };
-
-  const createOffers = () => {
-    return `
-    ${offers.map((offer) => offerTemplate(offer)).join(``)}
-    `;
-  };
-
-  const createEventTypeItems = () => {
-    return `
-    ${_const__WEBPACK_IMPORTED_MODULE_1__["EVENT_TYPES"].map(({type, name, image}) => `
-      <div class="event__type-item">
-          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}">
-          <label class="event__type-label  event__type-label--${image}" for="event-type-${type}-${id}">${name}</label>
-      </div>`).join(``)}
     `;
   };
 
@@ -961,34 +965,36 @@ const createEditEventTemplate = (event = {}) => {
 class EditEventView extends _abstract__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(event) {
     super();
-    this._event = event;
+    this._data = event;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._arrowCardHandler = this._arrowCardHandler.bind(this);
-
+    this._cardArrowHandler = this._cardArrowHandler.bind(this);
   }
 
+
   getTemplate() {
-    return createEditEventTemplate(this._event);
+    return createEditEventTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.submit();
+    this._callback.submit(this._data);
   }
 
-  _arrowCardHandler() {
-    this._callback.clickArrow();
+  _cardArrowHandler() {
+    this._callback.onArrowClick();
   }
 
-  setSubmitFormHandler(callback) {
+  setCardArrowHandler(callback) {
+    this._callback.onArrowClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._cardArrowHandler);
+  }
+
+
+  setFormSubmitHandler(callback) {
     this._callback.submit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  setArrowCardHandler(callback) {
-    this._callback.clickArrow = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowCardHandler);
-  }
 }
 
 
@@ -1119,23 +1125,23 @@ const createEventTemplate = (event) => {
 class EventView extends _abstract__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(event) {
     super();
-    this._event = event;
-    this._clickEditHandler = this._clickEditHandler.bind(this);
+    this._data = event;
+    this._editClickHandler = this._editClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createEventTemplate(this._event);
+    return createEventTemplate(this._data);
   }
 
-  _clickEditHandler(evt) {
+  _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickEdit();
+    this._callback.onEditClick();
   }
 
-  setClickEditHandler(callback) {
-    this._callback.clickEdit = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickEditHandler);
+  setEditClickHandler(callback) {
+    this._callback.onEditClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
   }
 
 
