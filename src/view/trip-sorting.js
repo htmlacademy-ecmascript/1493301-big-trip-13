@@ -38,5 +38,3 @@ export default class SortingView extends AbstractView {
     return createTripSortingTemplate();
   }
 }
-
-
