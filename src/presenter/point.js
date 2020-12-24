@@ -1,14 +1,8 @@
 import EventView from '../view/event';
 import EditEventView from '../view/edit-event';
 import {render, replace, remove} from '../util/render';
-import {RenderPosition} from '../const';
+import {RenderPosition, ESC_BUTTON, OperatingMode} from '../const';
 
-const ESC = `Escape`;
-
-const Mode = {
-  DEFAULT: `DEFAULT`,
-  EDITING: `EDITING`
-};
 
 export default class PointPresenter {
   constructor(eventsListContainer, changeData, changeMode) {
@@ -17,15 +11,15 @@ export default class PointPresenter {
     this._changeData = changeData;
     this._changeMode = changeMode;
 
-    this._mode = Mode.DEFAULT;
+    this._mode = OperatingMode.DEFAULT;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
 
-    this._handleClickEdit = this._handleClickEdit.bind(this);
+    this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleClickFavorite = this._handleClickFavorite.bind(this);
-    this._handleClickArrow = this._handleClickArrow.bind(this);
+    this._handleArrowClick = this._handleArrowClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
 
   }
@@ -39,9 +33,9 @@ export default class PointPresenter {
     this._eventComponent = new EventView(routePoint);
     this._eventEditComponent = new EditEventView(routePoint);
 
-    this._eventComponent.setClickEditHandler(this._handleClickEdit);
-    this._eventEditComponent.setArrowCardHandler(this._handleClickArrow);
-    this._eventEditComponent.setSubmitFormHandler(this._handleFormSubmit);
+    this._eventComponent.setEditClickHandler(this._handleEditClick);
+    this._eventEditComponent.setCardArrowHandler(this._handleArrowClick);
+    this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventComponent.setClickFavoriteHandler(this._handleClickFavorite);
 
 
@@ -50,11 +44,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this._mode === Mode.DEFAULT) {
+    if (this._mode === OperatingMode.DEFAULT) {
       replace(this._eventComponent, prevEventComponent);
     }
 
-    if (this._mode === Mode.EDITING) {
+    if (this._mode === OperatingMode.EDITING) {
       replace(this._eventEditComponent, prevEventEditComponent);
     }
 
@@ -68,7 +62,7 @@ export default class PointPresenter {
   }
 
   resetView() {
-    if (this._mode !== Mode.DEFAULT) {
+    if (this._mode !== OperatingMode.DEFAULT) {
       this._replaceFormToCard();
     }
   }
@@ -76,24 +70,24 @@ export default class PointPresenter {
   _replaceFormToCard() {
     replace(this._eventComponent, this._eventEditComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
-    this._mode = Mode.DEFAULT;
+    this._mode = OperatingMode.DEFAULT;
   }
 
   _replaceCardToForm() {
     replace(this._eventEditComponent, this._eventComponent);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
-    this._mode = Mode.EDITING;
+    this._mode = OperatingMode.EDITING;
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === ESC) {
+    if (evt.key === ESC_BUTTON) {
       evt.preventDefault();
       this._replaceFormToCard();
     }
   }
 
-  _handleClickEdit() {
+  _handleEditClick() {
     this._replaceCardToForm();
   }
 
@@ -102,7 +96,7 @@ export default class PointPresenter {
     this._replaceFormToCard();
   }
 
-  _handleClickArrow() {
+  _handleArrowClick() {
     this._replaceFormToCard();
   }
 

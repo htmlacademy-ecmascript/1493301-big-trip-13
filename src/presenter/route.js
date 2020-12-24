@@ -5,9 +5,9 @@ import EmptyListView from '../view/empty-list';
 import ListView from '../view/list';
 import SortingView from '../view/trip-sorting';
 import RoutePresenter from './point';
-import {RenderPosition} from '../const';
 import {render} from '../util/render';
 import {updateItem} from '../util/global';
+import {RenderPosition} from '../const';
 
 export default class Route {
   constructor(routeMainContainer, routePointsContainer) {
@@ -28,6 +28,8 @@ export default class Route {
 
   init(routePoints) {
     this._routePoints = routePoints.slice();
+
+
     this._renderRoute();
   }
 
@@ -56,10 +58,10 @@ export default class Route {
   }
 
 
-  _renderPoint(eventElement) {
+  _renderPoint(points) {
     const routePresenter = new RoutePresenter(this._eventsListComponent, this._handlePointChange, this._handleModeChange);
-    routePresenter.init(eventElement);
-    this._routePresenter[eventElement.id] = routePresenter;
+    routePresenter.init(points);
+    this._routePresenter[points.id] = routePresenter;
   }
 
   _renderRoutePoints() {

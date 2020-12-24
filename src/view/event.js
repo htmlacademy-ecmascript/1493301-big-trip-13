@@ -85,23 +85,23 @@ const createEventTemplate = (event) => {
 export default class EventView extends AbstractView {
   constructor(event) {
     super();
-    this._event = event;
-    this._clickEditHandler = this._clickEditHandler.bind(this);
+    this._data = event;
+    this._editClickHandler = this._editClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createEventTemplate(this._event);
+    return createEventTemplate(this._data);
   }
 
-  _clickEditHandler(evt) {
+  _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickEdit();
+    this._callback.onEditClick();
   }
 
-  setClickEditHandler(callback) {
-    this._callback.clickEdit = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickEditHandler);
+  setEditClickHandler(callback) {
+    this._callback.onEditClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
   }
 
 

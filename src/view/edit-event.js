@@ -4,31 +4,58 @@ import {humaneEditEventTime, createPrepositions} from '../util/event';
 import {capitalize} from '../util/global';
 
 
+const offerTemplate = (offer) => {
+  const {id, name, price, isChecked} = offer;
+  return ` <div class="event__offer-selector">
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``}>
+                        <label class="event__offer-label" for="event-offer-${id}">
+                          <span class="event__offer-title">${name}</span>
+                          &plus;&euro;&nbsp;
+                          <span class="event__offer-price">${price}</span>
+                        </label>
+                      </div>`;
+};
+
+const createOffers = (offers) => {
+  return `
+    ${offers.map((offer) => offerTemplate(offer)).join(``)}
+    `;
+};
+
+const createEventTypeItems = () => {
+  return `
+  ${EVENT_TYPES.map(({id, type, name, image}) => `
+      <div class="event__type-item">
+          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}">
+          <label class="event__type-label  event__type-label--${image}" for="event-type-${type}-${id}">${name}</label>
+      </div>`).join(``)}
+    `;
+};
+
 const createEditEventTemplate = (event = {}) => {
   const {
     city,
     eventType,
     eventStart,
     eventEnd,
-    price,
     offers,
     description,
     photos,
-    id
+    id,
+    price
   } = event;
-
-  const createDetailsSection = () => {
-    const offersSection = createOffersSection();
-    return `
-    ${offersSection}
-    `;
-  };
-
 
   const createOffersSection = () => {
     return `
     ${offersTemplate}
-    `;
+  `;
+  };
+
+  const createDetailsSection = () => {
+    const offersSection = createOffersSection();
+    return `
+        ${offersSection}
+        `;
   };
 
   const createPhotosSection = () => {
@@ -36,34 +63,6 @@ const createEditEventTemplate = (event = {}) => {
     ${photos.map(({photoPath}) => `
       <img class="event__photo" src=${photoPath}" alt="Event photo">
     `).join(``)}
-    `;
-  };
-
-  const offerTemplate = (offer) => {
-    const {name, isChecked} = offer;
-    return ` <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``}>
-                        <label class="event__offer-label" for="event-offer-${id}">
-                          <span class="event__offer-title">${name}</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">${offer.price}</span>
-                        </label>
-                      </div>`;
-  };
-
-  const createOffers = () => {
-    return `
-    ${offers.map((offer) => offerTemplate(offer)).join(``)}
-    `;
-  };
-
-  const createEventTypeItems = () => {
-    return `
-    ${EVENT_TYPES.map(({type, name, image}) => `
-      <div class="event__type-item">
-          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}">
-          <label class="event__type-label  event__type-label--${image}" for="event-type-${type}-${id}">${name}</label>
-      </div>`).join(``)}
     `;
   };
 
@@ -159,32 +158,34 @@ const createEditEventTemplate = (event = {}) => {
 export default class EditEventView extends AbstractView {
   constructor(event) {
     super();
-    this._event = event;
+    this._data = event;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._arrowCardHandler = this._arrowCardHandler.bind(this);
-
+    this._cardArrowHandler = this._cardArrowHandler.bind(this);
   }
 
+
   getTemplate() {
-    return createEditEventTemplate(this._event);
+    return createEditEventTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.submit();
+    this._callback.submit(this._data);
   }
 
-  _arrowCardHandler() {
-    this._callback.clickArrow();
+  _cardArrowHandler() {
+    this._callback.onArrowClick();
   }
 
-  setSubmitFormHandler(callback) {
+  setCardArrowHandler(callback) {
+    this._callback.onArrowClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._cardArrowHandler);
+  }
+
+
+  setFormSubmitHandler(callback) {
     this._callback.submit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  setArrowCardHandler(callback) {
-    this._callback.clickArrow = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowCardHandler);
-  }
 }

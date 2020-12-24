@@ -29,6 +29,13 @@ export const SortTypes = {
   PRICE: `price`
 };
 
+export const ESC_BUTTON = `Escape`;
+
+export const OperatingMode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
+
 export const RenderPosition = {
   BEFOREBEGIN: `beforebegin`,
   AFTERBEGIN: `afterbegin`,
