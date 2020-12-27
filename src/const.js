@@ -22,9 +22,8 @@ export const EVENT_OFFERS = [
   `Upgrade to business class`
 ];
 
-
 export const SortTypes = {
-  EVENT: `event`,
+  DAY: `day`,
   TIME: `time`,
   PRICE: `price`
 };
@@ -32,8 +31,8 @@ export const SortTypes = {
 export const ESC_BUTTON = `Escape`;
 
 export const OperatingMode = {
-  DEFAULT: `DEFAULT`,
-  EDITING: `EDITING`
+  DEFAULT: `default`,
+  EDITING: `editing`
 };
 
 export const RenderPosition = {
