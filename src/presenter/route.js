@@ -7,11 +7,14 @@ import SortingView from '../view/trip-sorting';
 import RoutePresenter from './point';
 import {render} from '../util/render';
 import {updateItem} from '../util/global';
-import {RenderPosition} from '../const';
+import {SortTypes, RenderPosition} from '../const';
+import {sortByDate, sortByPrice, sortByDuration, generateDays} from '../util/event';
 
 export default class Route {
   constructor(routeMainContainer, routePointsContainer) {
     this._routePresenter = {};
+    this._currentSortType = SortTypes.DAY;
+
 
     this._routeMainContainer = routeMainContainer;
     this._routePointsContainer = routePointsContainer;
@@ -20,22 +23,52 @@ export default class Route {
     this._sortingComponent = new SortingView();
     this._menuComponent = new SiteMenuView();
     this._filtersComponent = new TripFiltersView();
-    this._listEmptyComponent = new EmptyListView();
+    this._emptyListComponent = new EmptyListView();
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handlerSortTypeChange = this._handlerSortTypeChange.bind(this);
+
   }
 
   init(routePoints) {
-    this._routePoints = routePoints.slice();
 
+    this._sourcePoints = routePoints.slice().sort(sortByDate);
+    this._routePoints = this._sourcePoints.slice();
 
+    this._sourcedDays = generateDays(this._routePoints);
+    this._days = this._sourcedDays.slice();
+
+    render(this._routeMainContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
+
+    this._renderRouteInfo();
     this._renderRoute();
+
+  }
+
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortTypes.TIME:
+        this._routePoints.sort(sortByDuration);
+        this._days = null;
+        break;
+      case SortTypes.PRICE:
+        this._routePoints.sort(sortByPrice);
+        break;
+      case SortTypes.DAY:
+        this._routePoints.sort(sortByDate);
+        break;
+      default:
+        this._routePoints = this._sourcePoints.slice();
+        this._days = this._sourcedDays.slice();
+    }
+    this._currentSortType = sortType;
   }
 
 
   _renderSort() {
     render(this._routePointsContainer, this._sortingComponent, RenderPosition.AFTERBEGIN);
+    this._sortingComponent.setSortTypeChangeHandler(this._handlerSortTypeChange);
   }
 
 
@@ -70,8 +103,8 @@ export default class Route {
 
   }
 
-  _renderListEmpty() {
-    render(this._routePointsContainer, this._listEmptyComponent, RenderPosition.BEFOREEND);
+  _renderEmptyList() {
+    render(this._routePointsContainer, this._emptyListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderRouteInfo() {
@@ -90,14 +123,24 @@ export default class Route {
   }
 
   _renderRoute() {
-    this._renderRouteControls();
     if (this._routePoints.length === 0) {
-      this._renderListEmpty();
+      this._renderEmptyList();
       return;
     }
-    this._renderRouteInfo();
+    this._renderRouteControls();
     this._renderSort();
     this._renderPointsList();
     this._renderRoutePoints(this._routePoints);
   }
+
+  _handlerSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoints(sortType);
+    this._clearPointsList();
+    this._renderRoute();
+  }
 }
+
