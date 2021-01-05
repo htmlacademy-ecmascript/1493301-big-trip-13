@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 
 const OFFERS_AMOUNT = 3;
 
-const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
+export const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
 
 const TEXT = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -32,14 +32,13 @@ const generateStartDate = () => {
   return dayjs().add(daysGap, `day`).add(hourGap, `hour`).add(minGap, `minute`).toDate();
 };
 
-const generateDescription = () => {
+export const generateDescription = () => {
   const randomIndex = getRandomInteger(0, TEXT.length - 1);
 
   return TEXT[randomIndex];
 };
 
-
-const generatePhotos = () => {
+export const generatePhotos = () => {
   const photos = [];
   const randomIndex = getRandomInteger(0, 5);
 
@@ -57,7 +56,7 @@ const generateValue = (range) => {
   return range[randomIndex];
 };
 
-const generateOffers = () => {
+export const generateOffers = () => {
   const offers = new Map();
   EVENT_TYPES.forEach((eventType) => {
     const relatedDeals = [];

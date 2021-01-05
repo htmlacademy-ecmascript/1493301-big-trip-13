@@ -1,7 +1,20 @@
-import AbstractView from './abstract';
 import {EVENT_TYPES} from '../const';
 import {humaneEditEventTime, createPrepositions} from '../util/event';
 import {capitalize} from '../util/global';
+import SmartView from './smart';
+import {CITIES, generatePhotos, generateDescription, generateOffers} from '../mock/event';
+
+
+const createEventTypeItems = () => {
+  return `
+
+  ${EVENT_TYPES.map((type, id) => `
+      <div class="event__type-item">
+          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+          <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">${capitalize(type)}</label>
+      </div>`).join(``)}
+    `;
+};
 
 
 const offerTemplate = (offer) => {
@@ -22,16 +35,6 @@ const createOffers = (offers) => {
     `;
 };
 
-const createEventTypeItems = () => {
-  return `
-  ${EVENT_TYPES.map(({id, type, name, image}) => `
-      <div class="event__type-item">
-          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}">
-          <label class="event__type-label  event__type-label--${image}" for="event-type-${type}-${id}">${name}</label>
-      </div>`).join(``)}
-    `;
-};
-
 const createEditEventTemplate = (event = {}) => {
   const {
     city,
@@ -44,6 +47,7 @@ const createEditEventTemplate = (event = {}) => {
     id,
     price
   } = event;
+
 
   const createOffersSection = () => {
     return `
@@ -90,14 +94,12 @@ const createEditEventTemplate = (event = {}) => {
                     </div>
 
                     <div class="event__field-group  event__field-group--destination">
-                    <label class="event__label  event__type-output" for="event-destination-1">
+                    <label class="event__label  event__type-output" for="event-destination-${city}">
                       ${capitalize(eventType)}  ${createPrepositions(eventType)}
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
                     <datalist id="destination-list-${id}">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+                      ${CITIES.map((name) => `<option value="${name}"></option>`).join(``)}
                     </datalist>
                   </div>
 
@@ -155,14 +157,82 @@ const createEditEventTemplate = (event = {}) => {
             `;
 };
 
-export default class EditEventView extends AbstractView {
+export default class EditEventView extends SmartView {
   constructor(event) {
     super();
-    this._data = event;
+    this._data = EditEventView.parseEventToData(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cardArrowHandler = this._cardArrowHandler.bind(this);
+
+    this._cityInputHandler = this._cityInputHandler.bind(this);
+    this._eventTypeToggleHandler = this._eventTypeToggleHandler.bind(this);
+    this._offersChangeHandler = this._offersChangeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.submit);
+    this.setCardArrowHandler(this._callback.onArrowClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+    .querySelector(`.event__type-list`).addEventListener(`change`, this._eventTypeToggleHandler);
+    this.getElement()
+    .querySelector(`.event__input--destination`).addEventListener(`input`, this._cityInputHandler);
+
+    if (this._data.offers.length) {
+      this.getElement()
+      .querySelector(`.event__available-offers`).addEventListener(`change`, this._offersChangeHandler);
+    }
+  }
+
+
+  _cityInputHandler(evt) {
+    evt.preventDefault();
+    const newCity = evt.target.value;
+
+    if (!CITIES.includes(newCity)) {
+      evt.target.setCustomValidity(`You can choose only from the offered range of the cities`);
+      evt.target.style.background = `#ff8d85`;
+      evt.target.reportValidity();
+      return;
+    } else {
+      evt.target.style.background = `white`;
+    }
+
+    this.updateData({
+      city: newCity,
+      description: generateDescription(),
+      photos: generatePhotos(),
+    });
+  }
+
+  _eventTypeToggleHandler(evt) {
+    evt.preventDefault();
+    const setUpNewTypes = (value) => {
+      return EVENT_TYPES.find((type) => type === value);
+    };
+    const newType = setUpNewTypes(evt.target.value);
+    const offers = generateOffers();
+    const relatedDeals = offers.get(newType);
+
+    this.updateData({
+      eventType: newType,
+      offers: relatedDeals
+    });
+  }
+
+  _offersChangeHandler(evt) {
+    evt.preventDefault();
+    let renewSet = this._data.offers.slice();
+
+    this.updateData({
+      offers: renewSet
+    }, true);
+  }
 
   getTemplate() {
     return createEditEventTemplate(this._data);
@@ -170,11 +240,11 @@ export default class EditEventView extends AbstractView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.submit(this._data);
+    this._callback.submit(EditEventView.parseDataToEvent(this._data));
   }
 
   _cardArrowHandler() {
-    this._callback.onArrowClick();
+    this._callback.onArrowClick(EditEventView.parseEventToData(event));
   }
 
   setCardArrowHandler(callback) {
@@ -188,4 +258,11 @@ export default class EditEventView extends AbstractView {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
+  static parseEventToData(event) {
+    return Object.assign({}, event);
+  }
+
+  static parseDataToEvent(data) {
+    return Object.assign({}, data);
+  }
 }
