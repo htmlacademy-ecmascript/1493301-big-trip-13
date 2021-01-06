@@ -1,9 +1,12 @@
+import {CITIES} from '../util/const';
 import {EVENT_TYPES} from '../const';
-import {humaneEditEventTime, createPrepositions} from '../util/event';
 import {capitalize} from '../util/global';
+import {humaneEditEventTime, createPrepositions} from '../util/event';
+import {generatePhotos, generateDescription, generateOffers} from '../mock/event';
+import dayjs from "dayjs";
 import SmartView from './smart';
-import {CITIES, generatePhotos, generateDescription, generateOffers} from '../mock/event';
-
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createEventTypeItems = () => {
   return `
@@ -74,6 +77,7 @@ const createEditEventTemplate = (event = {}) => {
   const detailsSection = createDetailsSection();
   const photosSection = createPhotosSection();
   const eventTypeItems = createEventTypeItems();
+  const isSaveForbidden = !dayjs(eventEnd).isAfter(dayjs(eventStart).toDate());
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -106,10 +110,10 @@ const createEditEventTemplate = (event = {}) => {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${humaneEditEventTime(eventStart)}">
+                    <input class="event__input event__input--time" id="event-start-time-1" type="text" name="event-start-time" data-time="start" value="${humaneEditEventTime(eventStart)}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${humaneEditEventTime(eventEnd)}">
+                    <input class="event__input event__input--time" id="event-end-time-1" type="text" name="event-end-time" data-time="end"  value="${humaneEditEventTime(eventEnd)}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -119,7 +123,7 @@ const createEditEventTemplate = (event = {}) => {
                     </label>
                     <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
                   </div>
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaveForbidden ? `disabled` : ``}>Save</button>
                   <button class="event__reset-btn" type="reset">Delete</button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
@@ -157,6 +161,7 @@ const createEditEventTemplate = (event = {}) => {
             `;
 };
 
+
 export default class EditEventView extends SmartView {
   constructor(event) {
     super();
@@ -167,11 +172,55 @@ export default class EditEventView extends SmartView {
     this._cityInputHandler = this._cityInputHandler.bind(this);
     this._eventTypeToggleHandler = this._eventTypeToggleHandler.bind(this);
     this._offersChangeHandler = this._offersChangeHandler.bind(this);
+    this._eventStartChangeHandler = this._eventStartChangeHandler.bind(this);
+    this._eventEndChangeHandler = this._eventEndChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+        this.getElement().querySelector(`[data-time="start"]`),
+        {
+          enableTime: true,
+          dateFormat: `d/m/y H:i`,
+          [`time_24hr`]: true,
+          minDate: `today`,
+          defaultDate: this._data.eventStart,
+          onChange: this._eventStartChangeHandler
+        }
+    );
+
+    this._datepicker = flatpickr(
+        this.getElement().querySelector(`[data-time="end"]`),
+        {
+          enableTime: true,
+          dateFormat: `d/m/y H:i`,
+          [`time_24hr`]: true,
+          minDate: `today`,
+          defaultDate: this._data.eventEnd,
+          onChange: this._eventEndChangeHandler,
+        }
+    );
+  }
+
+  _eventStartChangeHandler(selectedDate) {
+    this.updateData({eventStart: selectedDate[0]});
+  }
+
+  _eventEndChangeHandler(selectedDate) {
+    this.updateData({eventEnd: selectedDate[0]});
+
   }
 
   restoreHandlers() {
+    this._setDatepicker();
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.submit);
     this.setCardArrowHandler(this._callback.onArrowClick);
@@ -188,7 +237,6 @@ export default class EditEventView extends SmartView {
       .querySelector(`.event__available-offers`).addEventListener(`change`, this._offersChangeHandler);
     }
   }
-
 
   _cityInputHandler(evt) {
     evt.preventDefault();
@@ -224,6 +272,7 @@ export default class EditEventView extends SmartView {
       offers: relatedDeals
     });
   }
+
 
   _offersChangeHandler(evt) {
     evt.preventDefault();

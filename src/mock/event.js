@@ -1,10 +1,9 @@
 import {EVENT_TYPES, EVENT_OFFERS} from '../const';
 import {getRandomInteger} from '../util/global';
+import {CITIES} from '../util/const';
 import dayjs from 'dayjs';
 
 const OFFERS_AMOUNT = 3;
-
-export const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
 
 const TEXT = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.`,
