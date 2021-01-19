@@ -1,6 +1,5 @@
-import {EVENT_TYPES, EVENT_OFFERS} from '../const';
+import {EVENT_TYPES, EVENT_OFFERS, CITIES} from '../const';
 import {getRandomInteger} from '../util/global';
-import {CITIES} from '../util/const';
 import dayjs from 'dayjs';
 
 const OFFERS_AMOUNT = 3;
@@ -11,7 +10,7 @@ const TEXT = [
   `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`,
 ];
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const generateCities = () => {
   const randomIndex = getRandomInteger(0, CITIES.length - 1);
@@ -63,8 +62,11 @@ export const generateOffers = () => {
       relatedDeals.push({
         type: eventType,
         name: EVENT_OFFERS[getRandomInteger(0, EVENT_OFFERS.length - 1)],
+        city: generateCities(),
         id: generateId(),
+        description: generateDescription(),
         price: getRandomInteger(3, 150),
+        photos: generatePhotos(),
         isChecked: Boolean(getRandomInteger(0, 1))
       });
     }
@@ -72,6 +74,8 @@ export const generateOffers = () => {
   });
   return offers;
 };
+
+export const OFFERS_FOR_POINT = generateOffers();
 
 export const generateEvent = () => {
   const eventStart = generateStartDate();
@@ -83,8 +87,7 @@ export const generateEvent = () => {
   const description = generateDescription();
   const photos = generatePhotos();
   const price = getRandomInteger(3, 150);
-  const offers = generateOffers();
-  const relatedDeals = offers.get(eventType);
+  const offers = OFFERS_FOR_POINT.get(eventType);
   const id = generateId();
 
   return {
@@ -97,7 +100,7 @@ export const generateEvent = () => {
     isFavorite,
     description,
     photos,
-    offers: relatedDeals,
+    offers,
     price,
   };
 };

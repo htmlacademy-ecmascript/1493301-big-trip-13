@@ -2,6 +2,8 @@ export const EVENT_TYPES = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`
 
 export const TRANSFER_EVENTS = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
 
+export const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
+
 export const EVENT_OFFERS = [
   `Add luggage`,
   `Add meal`,
@@ -28,6 +30,18 @@ export const SortTypes = {
   PRICE: `price`
 };
 
+export const BLANK_POINT = {
+  city: ``,
+  description: ``,
+  photos: [],
+  eventType: `drive`,
+  offers: [],
+  eventStart: new Date(),
+  eventEnd: new Date(),
+  price: 0,
+  isFavorite: false
+};
+
 export const ESC_BUTTON = `Escape`;
 
 export const OperatingMode = {
@@ -51,4 +65,20 @@ export const MenuTabs = {
   TABLE: `table`,
   STATS: `stats`
 };
+
+
+export const UserAction = {
+  UPDATE_POINT: `updatepoint`,
+  ADD_POINT: `addpoint`,
+  DELETE_POINT: `deletepoint`
+};
+
+export const UpdateType = {
+  PATCH: `patch`,
+  MINOR: `minow`,
+  MAJOR: `major`
+};
+
+
+
 

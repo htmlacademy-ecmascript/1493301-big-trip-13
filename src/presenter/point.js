@@ -1,7 +1,7 @@
 import EventView from '../view/event';
 import EditEventView from '../view/edit-event';
 import {render, replace, remove} from '../util/render';
-import {RenderPosition, ESC_BUTTON, OperatingMode} from '../const';
+import {RenderPosition, ESC_BUTTON, OperatingMode, UserAction, UpdateType} from '../const';
 
 
 export default class PointPresenter {
@@ -16,12 +16,12 @@ export default class PointPresenter {
     this._eventComponent = null;
     this._eventEditComponent = null;
 
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleClickFavorite = this._handleClickFavorite.bind(this);
     this._handleArrowClick = this._handleArrowClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-
   }
 
   init(routePoint) {
@@ -33,6 +33,7 @@ export default class PointPresenter {
     this._eventComponent = new EventView(routePoint);
     this._eventEditComponent = new EditEventView(routePoint);
 
+    this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventEditComponent.setCardArrowHandler(this._handleArrowClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
@@ -91,8 +92,12 @@ export default class PointPresenter {
     this._replaceCardToForm();
   }
 
-  _handleFormSubmit(routePoint) {
-    this._changeData(routePoint);
+  _handleFormSubmit(update) {
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        update
+    );
     this._replaceFormToCard();
   }
 
@@ -100,8 +105,17 @@ export default class PointPresenter {
     this._replaceFormToCard();
   }
 
+  _handleDeleteClick(routePoint) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        routePoint
+    );
+  }
   _handleClickFavorite() {
     this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._routePoint,
