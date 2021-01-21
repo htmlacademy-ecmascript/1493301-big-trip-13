@@ -167,36 +167,31 @@ export default class EditEventView extends SmartView {
 
     this._data = EditEventView.parseEventToData(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._cardArrowHandler = this._cardArrowHandler.bind(this);
 
+
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    this._cardArrowHandler = this._cardArrowHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
     this._cityInputHandler = this._cityInputHandler.bind(this);
     this._eventTypeToggleHandler = this._eventTypeToggleHandler.bind(this);
     this._offersChangeHandler = this._offersChangeHandler.bind(this);
     this._eventStartChangeHandler = this._eventStartChangeHandler.bind(this);
     this._eventEndChangeHandler = this._eventEndChangeHandler.bind(this);
-    this._priceInputHandler = this._priceInputHandler.bind(this);
-    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepicker();
   }
 
-  _priceInputHandler(evt) {
-    evt.preventDefault();
+  getTemplate() {
+    return createEditEventTemplate(this._data);
+  }
 
-    const priceValue = parseInt(evt.target.value, 10);
-    evt.target.value = priceValue;
+  removeElement() {
+    super.removeElement();
 
-    if (priceValue <= 0) {
-      evt.target.setCustomValidity(`Invalid value. The price must be greater than 0.`);
-      evt.target.style.background = `#ff8d85`;
-      evt.target.reportValidity();
-    } else {
-      evt.target.setCustomValidity(``);
-      evt.target.style.background = `white`;
-      this.updateData({
-        price: priceValue
-      }, true);
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
     }
   }
 
@@ -231,23 +226,6 @@ export default class EditEventView extends SmartView {
     );
   }
 
-  removeElement() {
-    super.removeElement();
-
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
-  }
-
-  _eventStartChangeHandler(selectedDate) {
-    this.updateData({eventStart: selectedDate[0]});
-  }
-
-  _eventEndChangeHandler(selectedDate) {
-    this.updateData({eventEnd: selectedDate[0]});
-  }
-
   restoreHandlers() {
     this.setDeleteClickHandler(this._callback.deleteClick);
     this._setDatepicker();
@@ -256,47 +234,17 @@ export default class EditEventView extends SmartView {
     this.setCardArrowHandler(this._callback.onArrowClick);
   }
 
-  _formDeleteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.deleteClick(EditEventView.parseDataToEvent(this._data));
-  }
-
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
-  }
-
   _setInnerHandlers() {
     this.getElement()
     .querySelector(`.event__type-list`).addEventListener(`change`, this._eventTypeToggleHandler);
     this.getElement()
-    .querySelector(`.event__input--destination`).addEventListener(`input`, this._cityInputHandler);
+    .querySelector(`.event__input--destination`).addEventListener(`change`, this._cityInputHandler, true);
     this.getElement().
     querySelector(`.event__input--price`).addEventListener(`input`, this._priceInputHandler);
     if (this._data.offers.length) {
       this.getElement()
       .querySelector(`.event__available-offers`).addEventListener(`change`, this._offersChangeHandler);
     }
-  }
-
-  _cityInputHandler(evt) {
-    evt.preventDefault();
-    const newCity = evt.target.value;
-
-    if (!CITIES.includes(newCity)) {
-      evt.target.setCustomValidity(`You can choose only from the offered range of the cities`);
-      evt.target.style.background = `#ff8d85`;
-      evt.target.reportValidity();
-      return;
-    } else {
-      evt.target.style.background = `white`;
-    }
-
-    this.updateData({
-      city: newCity,
-      description: generateDescription(),
-      photos: generatePhotos(),
-    });
   }
 
   _eventTypeToggleHandler(evt) {
@@ -314,6 +262,41 @@ export default class EditEventView extends SmartView {
     });
   }
 
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+
+    if (evt.target.value <= 0) {
+      evt.target.setCustomValidity(`Invalid value. The price must be greater than 0.`);
+      evt.target.style.background = `#ff8d85`;
+      evt.target.reportValidity();
+    } else {
+      evt.target.setCustomValidity(``);
+      evt.target.style.background = `white`;
+
+      this.updateData({
+        price: Number(evt.target.value)
+      }, true);
+    }
+  }
+
+  _cityInputHandler(evt) {
+    evt.preventDefault();
+
+    if (!CITIES.includes(evt.target.value)) {
+      evt.target.setCustomValidity(`You can choose only from the offered range of the cities`);
+      evt.target.style.background = `#ff8d85`;
+      evt.target.reportValidity();
+      return;
+    } else {
+      evt.target.style.background = `white`;
+    }
+
+    this.updateData({
+      city: evt.target.value,
+      description: generateDescription(),
+      photos: generatePhotos(),
+    });
+  }
 
   _offersChangeHandler(evt) {
     evt.preventDefault();
@@ -324,9 +307,28 @@ export default class EditEventView extends SmartView {
     }, true);
   }
 
-  getTemplate() {
-    return createEditEventTemplate(this._data);
+  _eventStartChangeHandler(selectedDate) {
+    this.updateData({eventStart: selectedDate[0]});
   }
+
+  _eventEndChangeHandler(selectedDate) {
+    this.updateData({eventEnd: selectedDate[0]});
+  }
+
+  reset(event) {
+    this.updateData(EditEventView.parseEventToData(event));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EditEventView.parseDataToEvent(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
+  }
+
 
   _formSubmitHandler(evt) {
     evt.preventDefault();

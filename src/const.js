@@ -26,8 +26,10 @@ export const EVENT_OFFERS = [
 
 export const SortTypes = {
   DAY: `day`,
+  EVENT: `event`,
   TIME: `time`,
-  PRICE: `price`
+  PRICE: `price`,
+  OFFERS: `offers`
 };
 
 export const BLANK_POINT = {
@@ -75,10 +77,6 @@ export const UserAction = {
 
 export const UpdateType = {
   PATCH: `patch`,
-  MINOR: `minow`,
+  MINOR: `minor`,
   MAJOR: `major`
 };
-
-
-
-

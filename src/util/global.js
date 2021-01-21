@@ -19,3 +19,5 @@ export const formatDateToIso = (date) => {
 
   return `${year}-${month}-${day}T${hour}:${minutes}`;
 };
+
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);

@@ -5,7 +5,7 @@ import RoutePresenter from './point';
 import {render, remove} from '../util/render';
 import {SortTypes, RenderPosition, UserAction, UpdateType, FilterTypes} from '../const';
 import {sortByDate, sortByPrice, sortByDuration} from '../util/event';
-import {filter} from '../util/filter';
+import {FILTER} from '../util/filter';
 import NewPointPresenter from './new-point';
 
 export default class Route {
@@ -50,7 +50,7 @@ export default class Route {
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const routePoints = this._pointsModel.getPoints();
-    const filteredPoints = filter[filterType](routePoints);
+    const filteredPoints = FILTER[filterType](routePoints);
 
     switch (this._currentSortType) {
       case SortTypes.DAY:

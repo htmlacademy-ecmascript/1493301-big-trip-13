@@ -1,6 +1,6 @@
 import TripFiltersView from '../view/trip-filters';
 import {render, replace, remove} from '../util/render';
-import {filter} from '../util/filter';
+import {FILTER} from '../util/filter';
 import {RenderPosition, FilterTypes, UpdateType} from '../const';
 
 export default class FilterPresenter {
@@ -50,23 +50,21 @@ export default class FilterPresenter {
   }
 
   _getFilters() {
-    const events = this._pointsModel.getPoints();
-
     return [
       {
         type: FilterTypes.EVERYTHING,
         name: `Everything`,
-        count: filter[FilterTypes.EVERYTHING](events).length
+        count: FILTER[FilterTypes.EVERYTHING](this._pointsModel.getPoints()).length
       },
       {
         type: FilterTypes.FUTURE,
         name: `Future`,
-        count: filter[FilterTypes.FUTURE](events).length
+        count: FILTER[FilterTypes.FUTURE](this._pointsModel.getPoints()).length
       },
       {
         type: FilterTypes.PAST,
         name: `Past`,
-        count: filter[FilterTypes.PAST](events).length
+        count: FILTER[FilterTypes.PAST](this._pointsModel.getPoints()).length
       },
     ];
   }
