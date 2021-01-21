@@ -2,8 +2,10 @@ import AbstractView from './abstract';
 import {SortTypes} from '../const';
 import {capitalize} from '../util/global';
 
+const INACTIVE = [SortTypes.EVENT, SortTypes.OFFERS];
+
 const createSortingItemTemplate = (sortType, currentSortType) => {
-  const isInactive = (sortTypes) => sortTypes === `event` || sortTypes === `offers`;
+  const isInactive = (types) => INACTIVE.includes(types);
   return `<div class="trip-sort__item  trip-sort__item--${sortType}">
     <input data-sort-type="${sortType}" id="sort-${sortType}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortType}" ${sortType === currentSortType ? `checked` : ``} ${isInactive(sortType) ? `disabled` : ``} >
     <label class="trip-sort__btn" for="sort-${sortType}" ${isInactive(sortType) ? `` : `data-sort-type="${sortType}"`}>
