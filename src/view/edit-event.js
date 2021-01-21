@@ -1,5 +1,4 @@
-import {CITIES} from '../util/const';
-import {EVENT_TYPES} from '../const';
+import {EVENT_TYPES, CITIES, BLANK_POINT} from '../const';
 import {capitalize} from '../util/global';
 import {humaneEditEventTime, createPrepositions} from '../util/event';
 import {generatePhotos, generateDescription, generateOffers} from '../mock/event';
@@ -7,10 +6,10 @@ import dayjs from "dayjs";
 import SmartView from './smart';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 const createEventTypeItems = () => {
   return `
-
   ${EVENT_TYPES.map((type, id) => `
       <div class="event__type-item">
           <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
@@ -23,7 +22,7 @@ const createEventTypeItems = () => {
 const offerTemplate = (offer) => {
   const {id, name, price, isChecked} = offer;
   return ` <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``}>
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``} >
                         <label class="event__offer-label" for="event-offer-${id}">
                           <span class="event__offer-title">${name}</span>
                           &plus;&euro;&nbsp;
@@ -103,7 +102,7 @@ const createEditEventTemplate = (event = {}) => {
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
                     <datalist id="destination-list-${id}">
-                      ${CITIES.map((name) => `<option value="${name}"></option>`).join(``)}
+                      ${CITIES.map((name) => `<option value="${he.encode(name)}"></option>`).join(``)}
                     </datalist>
                   </div>
 
@@ -121,7 +120,7 @@ const createEditEventTemplate = (event = {}) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
+                    <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}" min="1" required>
                   </div>
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaveForbidden ? `disabled` : ``}>Save</button>
                   <button class="event__reset-btn" type="reset">Delete</button>
@@ -163,12 +162,15 @@ const createEditEventTemplate = (event = {}) => {
 
 
 export default class EditEventView extends SmartView {
-  constructor(event) {
+  constructor(event = BLANK_POINT) {
     super();
+
     this._data = EditEventView.parseEventToData(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._cardArrowHandler = this._cardArrowHandler.bind(this);
 
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    this._cardArrowHandler = this._cardArrowHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
     this._cityInputHandler = this._cityInputHandler.bind(this);
     this._eventTypeToggleHandler = this._eventTypeToggleHandler.bind(this);
     this._offersChangeHandler = this._offersChangeHandler.bind(this);
@@ -177,6 +179,19 @@ export default class EditEventView extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+  }
+
+  getTemplate() {
+    return createEditEventTemplate(this._data);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   _setDatepicker() {
@@ -210,16 +225,8 @@ export default class EditEventView extends SmartView {
     );
   }
 
-  _eventStartChangeHandler(selectedDate) {
-    this.updateData({eventStart: selectedDate[0]});
-  }
-
-  _eventEndChangeHandler(selectedDate) {
-    this.updateData({eventEnd: selectedDate[0]});
-
-  }
-
   restoreHandlers() {
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this._setDatepicker();
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.submit);
@@ -230,32 +237,13 @@ export default class EditEventView extends SmartView {
     this.getElement()
     .querySelector(`.event__type-list`).addEventListener(`change`, this._eventTypeToggleHandler);
     this.getElement()
-    .querySelector(`.event__input--destination`).addEventListener(`input`, this._cityInputHandler);
-
+    .querySelector(`.event__input--destination`).addEventListener(`change`, this._cityInputHandler, true);
+    this.getElement().
+    querySelector(`.event__input--price`).addEventListener(`input`, this._priceInputHandler);
     if (this._data.offers.length) {
       this.getElement()
       .querySelector(`.event__available-offers`).addEventListener(`change`, this._offersChangeHandler);
     }
-  }
-
-  _cityInputHandler(evt) {
-    evt.preventDefault();
-    const newCity = evt.target.value;
-
-    if (!CITIES.includes(newCity)) {
-      evt.target.setCustomValidity(`You can choose only from the offered range of the cities`);
-      evt.target.style.background = `#ff8d85`;
-      evt.target.reportValidity();
-      return;
-    } else {
-      evt.target.style.background = `white`;
-    }
-
-    this.updateData({
-      city: newCity,
-      description: generateDescription(),
-      photos: generatePhotos(),
-    });
   }
 
   _eventTypeToggleHandler(evt) {
@@ -273,6 +261,35 @@ export default class EditEventView extends SmartView {
     });
   }
 
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+    evt.target.setCustomValidity(`Invalid value. The price must be greater than 0.`);
+    evt.target.reportValidity();
+    evt.target.setCustomValidity(``);
+
+    this.updateData({
+      price: Number(evt.target.value)
+    }, true);
+  }
+
+  _cityInputHandler(evt) {
+    evt.preventDefault();
+
+    if (!CITIES.includes(evt.target.value)) {
+      evt.target.setCustomValidity(`You can choose only from the offered range of the cities`);
+      evt.target.style.background = `#ff8d85`;
+      evt.target.reportValidity();
+      return;
+    } else {
+      evt.target.style.background = `white`;
+    }
+
+    this.updateData({
+      city: evt.target.value,
+      description: generateDescription(),
+      photos: generatePhotos(),
+    });
+  }
 
   _offersChangeHandler(evt) {
     evt.preventDefault();
@@ -283,8 +300,22 @@ export default class EditEventView extends SmartView {
     }, true);
   }
 
-  getTemplate() {
-    return createEditEventTemplate(this._data);
+  _eventStartChangeHandler(selectedDate) {
+    this.updateData({eventStart: selectedDate[0]});
+  }
+
+  _eventEndChangeHandler(selectedDate) {
+    this.updateData({eventEnd: selectedDate[0]});
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EditEventView.parseDataToEvent(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   _formSubmitHandler(evt) {
