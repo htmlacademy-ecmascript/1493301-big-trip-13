@@ -11,7 +11,7 @@ const isFuturePoint = (date) => {
 };
 
 export const FILTER = {
-  [FilterTypes.EVERYTHING]: (events) => events.filter((event) => event),
+  [FilterTypes.EVERYTHING]: (events) => events,
   [FilterTypes.FUTURE]: (events) => events.filter((event) => isFuturePoint(event.dateStart)),
   [FilterTypes.PAST]: (events) => events.filter((event) => isPastPoint(event.dateEnd))
 };

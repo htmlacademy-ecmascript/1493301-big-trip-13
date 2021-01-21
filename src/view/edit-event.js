@@ -120,7 +120,7 @@ const createEditEventTemplate = (event = {}) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}" required>
+                    <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}" min="1" required>
                   </div>
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaveForbidden ? `disabled` : ``}>Save</button>
                   <button class="event__reset-btn" type="reset">Delete</button>
@@ -167,7 +167,6 @@ export default class EditEventView extends SmartView {
 
     this._data = EditEventView.parseEventToData(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-
 
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._cardArrowHandler = this._cardArrowHandler.bind(this);
@@ -264,19 +263,13 @@ export default class EditEventView extends SmartView {
 
   _priceInputHandler(evt) {
     evt.preventDefault();
+    evt.target.setCustomValidity(`Invalid value. The price must be greater than 0.`);
+    evt.target.reportValidity();
+    evt.target.setCustomValidity(``);
 
-    if (evt.target.value <= 0) {
-      evt.target.setCustomValidity(`Invalid value. The price must be greater than 0.`);
-      evt.target.style.background = `#ff8d85`;
-      evt.target.reportValidity();
-    } else {
-      evt.target.setCustomValidity(``);
-      evt.target.style.background = `white`;
-
-      this.updateData({
-        price: Number(evt.target.value)
-      }, true);
-    }
+    this.updateData({
+      price: Number(evt.target.value)
+    }, true);
   }
 
   _cityInputHandler(evt) {
@@ -315,10 +308,6 @@ export default class EditEventView extends SmartView {
     this.updateData({eventEnd: selectedDate[0]});
   }
 
-  reset(event) {
-    this.updateData(EditEventView.parseEventToData(event));
-  }
-
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteClick(EditEventView.parseDataToEvent(this._data));
@@ -328,7 +317,6 @@ export default class EditEventView extends SmartView {
     this._callback.deleteClick = callback;
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
   }
-
 
   _formSubmitHandler(evt) {
     evt.preventDefault();

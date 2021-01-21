@@ -50,22 +50,12 @@ export default class FilterPresenter {
   }
 
   _getFilters() {
-    return [
-      {
-        type: FilterTypes.EVERYTHING,
-        name: `Everything`,
-        count: FILTER[FilterTypes.EVERYTHING](this._pointsModel.getPoints()).length
-      },
-      {
-        type: FilterTypes.FUTURE,
-        name: `Future`,
-        count: FILTER[FilterTypes.FUTURE](this._pointsModel.getPoints()).length
-      },
-      {
-        type: FilterTypes.PAST,
-        name: `Past`,
-        count: FILTER[FilterTypes.PAST](this._pointsModel.getPoints()).length
-      },
-    ];
+    return Object.values(FilterTypes).map((filter) => {
+      return {
+        type: filter,
+        name: filter.toUpperCase(),
+        count: FILTER[filter](this._pointsModel.getPoints()).length
+      };
+    });
   }
 }
