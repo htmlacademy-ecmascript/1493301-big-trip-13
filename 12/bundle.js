@@ -3679,8 +3679,10 @@ const EVENT_OFFERS = [
 
 const SortTypes = {
   DAY: `day`,
+  EVENT: `event`,
   TIME: `time`,
-  PRICE: `price`
+  PRICE: `price`,
+  OFFERS: `offers`
 };
 
 const BLANK_POINT = {
@@ -3728,13 +3730,9 @@ const UserAction = {
 
 const UpdateType = {
   PATCH: `patch`,
-  MINOR: `minow`,
+  MINOR: `minor`,
   MAJOR: `major`
 };
-
-
-
-
 
 
 /***/ }),
@@ -3805,12 +3803,11 @@ buttonNewPoint.addEventListener(`click`, (evt) => {
 /*!***************************!*\
   !*** ./src/mock/event.js ***!
   \***************************/
-/*! exports provided: generateId, generateDescription, generatePhotos, generateOffers, OFFERS_FOR_POINT, generateEvent */
+/*! exports provided: generateDescription, generatePhotos, generateOffers, OFFERS_FOR_POINT, generateEvent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateId", function() { return generateId; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateDescription", function() { return generateDescription; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generatePhotos", function() { return generatePhotos; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateOffers", function() { return generateOffers; });
@@ -3831,8 +3828,6 @@ const TEXT = [
   `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
   `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`,
 ];
-
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const generateCities = () => {
   const randomIndex = Object(_util_global__WEBPACK_IMPORTED_MODULE_1__["getRandomInteger"])(0, _const__WEBPACK_IMPORTED_MODULE_0__["CITIES"].length - 1);
@@ -3885,7 +3880,7 @@ const generateOffers = () => {
         type: eventType,
         name: _const__WEBPACK_IMPORTED_MODULE_0__["EVENT_OFFERS"][Object(_util_global__WEBPACK_IMPORTED_MODULE_1__["getRandomInteger"])(0, _const__WEBPACK_IMPORTED_MODULE_0__["EVENT_OFFERS"].length - 1)],
         city: generateCities(),
-        id: generateId(),
+        id: Object(_util_global__WEBPACK_IMPORTED_MODULE_1__["generateId"])(),
         description: generateDescription(),
         price: Object(_util_global__WEBPACK_IMPORTED_MODULE_1__["getRandomInteger"])(3, 150),
         photos: generatePhotos(),
@@ -3910,7 +3905,7 @@ const generateEvent = () => {
   const photos = generatePhotos();
   const price = Object(_util_global__WEBPACK_IMPORTED_MODULE_1__["getRandomInteger"])(3, 150);
   const offers = OFFERS_FOR_POINT.get(eventType);
-  const id = generateId();
+  const id = Object(_util_global__WEBPACK_IMPORTED_MODULE_1__["generateId"])();
 
   return {
     eventStart,
@@ -4102,23 +4097,21 @@ class FilterPresenter {
   }
 
   _getFilters() {
-    const events = this._pointsModel.getPoints();
-
     return [
       {
         type: _const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].EVERYTHING,
         name: `Everything`,
-        count: _util_filter__WEBPACK_IMPORTED_MODULE_2__["filter"][_const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].EVERYTHING](events).length
+        count: _util_filter__WEBPACK_IMPORTED_MODULE_2__["FILTER"][_const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].EVERYTHING](this._pointsModel.getPoints()).length
       },
       {
         type: _const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].FUTURE,
         name: `Future`,
-        count: _util_filter__WEBPACK_IMPORTED_MODULE_2__["filter"][_const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].FUTURE](events).length
+        count: _util_filter__WEBPACK_IMPORTED_MODULE_2__["FILTER"][_const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].FUTURE](this._pointsModel.getPoints()).length
       },
       {
         type: _const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].PAST,
         name: `Past`,
-        count: _util_filter__WEBPACK_IMPORTED_MODULE_2__["filter"][_const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].PAST](events).length
+        count: _util_filter__WEBPACK_IMPORTED_MODULE_2__["FILTER"][_const__WEBPACK_IMPORTED_MODULE_3__["FilterTypes"].PAST](this._pointsModel.getPoints()).length
       },
     ];
   }
@@ -4138,7 +4131,7 @@ class FilterPresenter {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return NewPointPresenter; });
 /* harmony import */ var _view_edit_event__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../view/edit-event */ "./src/view/edit-event.js");
-/* harmony import */ var _mock_event__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mock/event */ "./src/mock/event.js");
+/* harmony import */ var _util_global__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/global */ "./src/util/global.js");
 /* harmony import */ var _util_render__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/render */ "./src/util/render.js");
 /* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../const */ "./src/const.js");
 
@@ -4153,19 +4146,17 @@ class NewPointPresenter {
 
     this._eventEditComponent = null;
 
+    this._cardArrowHandler = this._cardArrowHandler.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
   init() {
-    if (this._eventEditComponent !== null) {
-      return;
-    }
-
     this._eventEditComponent = new _view_edit_event__WEBPACK_IMPORTED_MODULE_0__["default"]();
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._eventEditComponent.setCardArrowHandler(this._cardArrowHandler);
 
     Object(_util_render__WEBPACK_IMPORTED_MODULE_2__["render"])(this._eventListContainer, this._eventEditComponent, _const__WEBPACK_IMPORTED_MODULE_3__["RenderPosition"].AFTERBEGIN);
 
@@ -4187,8 +4178,12 @@ class NewPointPresenter {
     this._changeData(
         _const__WEBPACK_IMPORTED_MODULE_3__["UserAction"].ADD_POINT,
         _const__WEBPACK_IMPORTED_MODULE_3__["UpdateType"].MINOR,
-        Object.assign({id: Object(_mock_event__WEBPACK_IMPORTED_MODULE_1__["generateId"])()}, event)
+        Object.assign({id: Object(_util_global__WEBPACK_IMPORTED_MODULE_1__["generateId"])()}, event)
     );
+    this.destroy();
+  }
+
+  _cardArrowHandler() {
     this.destroy();
   }
 
@@ -4424,7 +4419,7 @@ class Route {
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const routePoints = this._pointsModel.getPoints();
-    const filteredPoints = _util_filter__WEBPACK_IMPORTED_MODULE_7__["filter"][filterType](routePoints);
+    const filteredPoints = _util_filter__WEBPACK_IMPORTED_MODULE_7__["FILTER"][filterType](routePoints);
 
     switch (this._currentSortType) {
       case _const__WEBPACK_IMPORTED_MODULE_5__["SortTypes"].DAY:
@@ -4660,12 +4655,12 @@ const sortByDuration = (first, second) => {
 /*!****************************!*\
   !*** ./src/util/filter.js ***!
   \****************************/
-/*! exports provided: filter */
+/*! exports provided: FILTER */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filter", function() { return filter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FILTER", function() { return FILTER; });
 /* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../const */ "./src/const.js");
 /* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
 /* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(dayjs__WEBPACK_IMPORTED_MODULE_1__);
@@ -4681,7 +4676,7 @@ const isFuturePoint = (date) => {
   return date === null ? false : dayjs__WEBPACK_IMPORTED_MODULE_1___default()().isBefore(date, `day`) || dayjs__WEBPACK_IMPORTED_MODULE_1___default()().isSame(date, `day`);
 };
 
-const filter = {
+const FILTER = {
   [_const__WEBPACK_IMPORTED_MODULE_0__["FilterTypes"].EVERYTHING]: (events) => events.filter((event) => event),
   [_const__WEBPACK_IMPORTED_MODULE_0__["FilterTypes"].FUTURE]: (events) => events.filter((event) => isFuturePoint(event.dateStart)),
   [_const__WEBPACK_IMPORTED_MODULE_0__["FilterTypes"].PAST]: (events) => events.filter((event) => isPastPoint(event.dateEnd))
@@ -4694,7 +4689,7 @@ const filter = {
 /*!****************************!*\
   !*** ./src/util/global.js ***!
   \****************************/
-/*! exports provided: getRandomInteger, capitalize, formatDateToIso */
+/*! exports provided: getRandomInteger, capitalize, formatDateToIso, generateId */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4702,6 +4697,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomInteger", function() { return getRandomInteger; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "capitalize", function() { return capitalize; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDateToIso", function() { return formatDateToIso; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateId", function() { return generateId; });
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -4723,6 +4719,8 @@ const formatDateToIso = (date) => {
 
   return `${year}-${month}-${day}T${hour}:${minutes}`;
 };
+
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 
 /***/ }),
@@ -5079,36 +5077,31 @@ class EditEventView extends _smart__WEBPACK_IMPORTED_MODULE_5__["default"] {
 
     this._data = EditEventView.parseEventToData(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._cardArrowHandler = this._cardArrowHandler.bind(this);
 
+
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    this._cardArrowHandler = this._cardArrowHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
     this._cityInputHandler = this._cityInputHandler.bind(this);
     this._eventTypeToggleHandler = this._eventTypeToggleHandler.bind(this);
     this._offersChangeHandler = this._offersChangeHandler.bind(this);
     this._eventStartChangeHandler = this._eventStartChangeHandler.bind(this);
     this._eventEndChangeHandler = this._eventEndChangeHandler.bind(this);
-    this._priceInputHandler = this._priceInputHandler.bind(this);
-    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepicker();
   }
 
-  _priceInputHandler(evt) {
-    evt.preventDefault();
+  getTemplate() {
+    return createEditEventTemplate(this._data);
+  }
 
-    const priceValue = parseInt(evt.target.value, 10);
-    evt.target.value = priceValue;
+  removeElement() {
+    super.removeElement();
 
-    if (priceValue <= 0) {
-      evt.target.setCustomValidity(`Invalid value. The price must be greater than 0.`);
-      evt.target.style.background = `#ff8d85`;
-      evt.target.reportValidity();
-    } else {
-      evt.target.setCustomValidity(``);
-      evt.target.style.background = `white`;
-      this.updateData({
-        price: priceValue
-      }, true);
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
     }
   }
 
@@ -5143,23 +5136,6 @@ class EditEventView extends _smart__WEBPACK_IMPORTED_MODULE_5__["default"] {
     );
   }
 
-  removeElement() {
-    super.removeElement();
-
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
-  }
-
-  _eventStartChangeHandler(selectedDate) {
-    this.updateData({eventStart: selectedDate[0]});
-  }
-
-  _eventEndChangeHandler(selectedDate) {
-    this.updateData({eventEnd: selectedDate[0]});
-  }
-
   restoreHandlers() {
     this.setDeleteClickHandler(this._callback.deleteClick);
     this._setDatepicker();
@@ -5168,47 +5144,17 @@ class EditEventView extends _smart__WEBPACK_IMPORTED_MODULE_5__["default"] {
     this.setCardArrowHandler(this._callback.onArrowClick);
   }
 
-  _formDeleteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.deleteClick(EditEventView.parseDataToEvent(this._data));
-  }
-
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
-  }
-
   _setInnerHandlers() {
     this.getElement()
     .querySelector(`.event__type-list`).addEventListener(`change`, this._eventTypeToggleHandler);
     this.getElement()
-    .querySelector(`.event__input--destination`).addEventListener(`input`, this._cityInputHandler);
+    .querySelector(`.event__input--destination`).addEventListener(`change`, this._cityInputHandler, true);
     this.getElement().
     querySelector(`.event__input--price`).addEventListener(`input`, this._priceInputHandler);
     if (this._data.offers.length) {
       this.getElement()
       .querySelector(`.event__available-offers`).addEventListener(`change`, this._offersChangeHandler);
     }
-  }
-
-  _cityInputHandler(evt) {
-    evt.preventDefault();
-    const newCity = evt.target.value;
-
-    if (!_const__WEBPACK_IMPORTED_MODULE_0__["CITIES"].includes(newCity)) {
-      evt.target.setCustomValidity(`You can choose only from the offered range of the cities`);
-      evt.target.style.background = `#ff8d85`;
-      evt.target.reportValidity();
-      return;
-    } else {
-      evt.target.style.background = `white`;
-    }
-
-    this.updateData({
-      city: newCity,
-      description: Object(_mock_event__WEBPACK_IMPORTED_MODULE_3__["generateDescription"])(),
-      photos: Object(_mock_event__WEBPACK_IMPORTED_MODULE_3__["generatePhotos"])(),
-    });
   }
 
   _eventTypeToggleHandler(evt) {
@@ -5226,6 +5172,41 @@ class EditEventView extends _smart__WEBPACK_IMPORTED_MODULE_5__["default"] {
     });
   }
 
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+
+    if (evt.target.value <= 0) {
+      evt.target.setCustomValidity(`Invalid value. The price must be greater than 0.`);
+      evt.target.style.background = `#ff8d85`;
+      evt.target.reportValidity();
+    } else {
+      evt.target.setCustomValidity(``);
+      evt.target.style.background = `white`;
+
+      this.updateData({
+        price: Number(evt.target.value)
+      }, true);
+    }
+  }
+
+  _cityInputHandler(evt) {
+    evt.preventDefault();
+
+    if (!_const__WEBPACK_IMPORTED_MODULE_0__["CITIES"].includes(evt.target.value)) {
+      evt.target.setCustomValidity(`You can choose only from the offered range of the cities`);
+      evt.target.style.background = `#ff8d85`;
+      evt.target.reportValidity();
+      return;
+    } else {
+      evt.target.style.background = `white`;
+    }
+
+    this.updateData({
+      city: evt.target.value,
+      description: Object(_mock_event__WEBPACK_IMPORTED_MODULE_3__["generateDescription"])(),
+      photos: Object(_mock_event__WEBPACK_IMPORTED_MODULE_3__["generatePhotos"])(),
+    });
+  }
 
   _offersChangeHandler(evt) {
     evt.preventDefault();
@@ -5236,9 +5217,28 @@ class EditEventView extends _smart__WEBPACK_IMPORTED_MODULE_5__["default"] {
     }, true);
   }
 
-  getTemplate() {
-    return createEditEventTemplate(this._data);
+  _eventStartChangeHandler(selectedDate) {
+    this.updateData({eventStart: selectedDate[0]});
   }
+
+  _eventEndChangeHandler(selectedDate) {
+    this.updateData({eventEnd: selectedDate[0]});
+  }
+
+  reset(event) {
+    this.updateData(EditEventView.parseEventToData(event));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EditEventView.parseDataToEvent(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
+  }
+
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
@@ -5561,25 +5561,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/view/abstract.js");
 
 
-
-const createTripFiltersTemplate = (filter, currentFilterType) => {
-  const {type} = filter;
-  return `<form class="trip-filters" action="#" method="get">
-    <div class="trip-filters__filter">
-      <input id="filter-everything" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="everything" ${type === `everything` ? `checked` : ``}>
-      <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
-    </div>
-    <div class="trip-filters__filter">
-      <input id="filter-future" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="future" ${type === currentFilterType ? `checked` : ``}>
-      <label class="trip-filters__filter-label" for="filter-future">Future</label>
-    </div>
-    <div class="trip-filters__filter">
-      <input id="filter-past" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="past" ${type === currentFilterType ? `checked` : ``}>
-      <label class="trip-filters__filter-label" for="filter-past">Past</label>
-    </div>
-    <button class="visually-hidden" type="submit">Accept filter</button>
-  </form>`;
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, count} = filter;
+  return `<div class="trip-filters__filter">
+        <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}"
+        ${type === currentFilterType ? `checked` : ``} ${count === 0 ? `disabled` : ``}>
+        <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
+      </div>`;
 };
+
+const createTripFiltersTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join(``);
+  return `<form class="trip-filters" action="#" method="get">
+        ${filterItemsTemplate}
+        <button class="visually-hidden" type="submit">Accept filter</button>
+      </form>`;
+};
+
 
 class TripFiltersView extends _abstract__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(filters, currentFilterType) {
@@ -5638,7 +5636,7 @@ const createTripInfoTemplate = () => {
       <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
     </div>
     <p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value"></span>
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">570</span>
     </p>
   </section>`;
 };
@@ -5664,34 +5662,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SortingView; });
 /* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/view/abstract.js");
 /* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const */ "./src/const.js");
+/* harmony import */ var _util_global__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/global */ "./src/util/global.js");
 
 
 
+
+const createSortingItemTemplate = (sortType, currentSortType) => {
+  const isInactive = (sortTypes) => sortTypes === `event` || sortTypes === `offers`;
+  return `<div class="trip-sort__item  trip-sort__item--${sortType}">
+    <input data-sort-type="${sortType}" id="sort-${sortType}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortType}" ${sortType === currentSortType ? `checked` : ``} ${isInactive(sortType) ? `disabled` : ``} >
+    <label class="trip-sort__btn" for="sort-${sortType}" ${isInactive(sortType) ? `` : `data-sort-type="${sortType}"`}>
+      ${Object(_util_global__WEBPACK_IMPORTED_MODULE_2__["capitalize"])(sortType)}
+    </label>
+  </div>`;
+};
 
 const createTripSortingTemplate = (currentSortType) => {
+  const sortItemsTemplate = Object.values(_const__WEBPACK_IMPORTED_MODULE_1__["SortTypes"]).map((sortType) => createSortingItemTemplate(sortType, currentSortType)).join(``);
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-  <div class="trip-sort__item  trip-sort__item--day">
-    <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" data-sort-type="${_const__WEBPACK_IMPORTED_MODULE_1__["SortTypes"].DAY}" ${currentSortType === _const__WEBPACK_IMPORTED_MODULE_1__["SortTypes"].DAY ? `checked` : ``}>
-    <label class="trip-sort__btn" for="sort-day">Day</label>
-  </div>
-  <div class="trip-sort__item  trip-sort__item--event">
-    <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" disabled>
-    <label class="trip-sort__btn" for="sort-event">Event</label>
-  </div>
-  <div class="trip-sort__item  trip-sort__item--time">
-    <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" data-sort-type="${_const__WEBPACK_IMPORTED_MODULE_1__["SortTypes"].TIME}" ${currentSortType === _const__WEBPACK_IMPORTED_MODULE_1__["SortTypes"].TIME ? `checked` : ``}>
-    <label class="trip-sort__btn" for="sort-time">Time</label>
-  </div>
-  <div class="trip-sort__item  trip-sort__item--price">
-    <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" data-sort-type="${_const__WEBPACK_IMPORTED_MODULE_1__["SortTypes"].PRICE}" ${currentSortType === _const__WEBPACK_IMPORTED_MODULE_1__["SortTypes"].PRICE ? `checked` : ``}>
-    <label class="trip-sort__btn" for="sort-price">Price</label>
-  </div>
-  <div class="trip-sort__item  trip-sort__item--offer">
-    <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
-    <label class="trip-sort__btn" for="sort-offer">Offers</label>
-  </div>
-</form>`;
+      ${sortItemsTemplate}
+    </form>`;
 };
+
 
 class SortingView extends _abstract__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(currentSortType) {
