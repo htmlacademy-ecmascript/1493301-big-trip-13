@@ -12,22 +12,20 @@ import StatsView from './view/stats';
 import Api from './api';
 
 const AUTHORIZATION = `Basic ow13r13p55s02va34`;
-const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
+const ENDPOINT = `https://13.ecmascript.pages.academy/big-trip`;
 
-const api = new Api(END_POINT, AUTHORIZATION);
+const api = new Api(ENDPOINT, AUTHORIZATION);
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
+const menuComponent = new SiteMenuView();
 
 const siteMainElement = document.querySelector(`.page-body`);
 const routeMainElement = siteMainElement.querySelector(`.trip-main`);
 const routeControlsElements = routeMainElement.querySelector(`.trip-controls`);
 const routeEventsElement = siteMainElement.querySelector(`.trip-events`);
 
-const menuComponent = new SiteMenuView();
-
-render(routeMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
 
 const filterPresenter = new FilterPresenter(routeControlsElements, filterModel, pointsModel);
 filterPresenter.init();
@@ -52,6 +50,8 @@ const newEventClickHandler = (evt) => {
     menuComponent.getElement().querySelector(`[data-value="${MenuTabs.TABLE}"]`).classList.add(`trip-tabs__btn--active`);
   }
 };
+
+render(routeMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
 
 routeMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, newEventClickHandler);
 

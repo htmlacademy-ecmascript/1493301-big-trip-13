@@ -1,5 +1,5 @@
 import PointsModel from './model/points';
-import {Method} from './const';
+import {Method, UrlAdress} from './const';
 
 
 const SuccessHTTPStatusRange = {
@@ -8,24 +8,24 @@ const SuccessHTTPStatusRange = {
 };
 
 export default class Api {
-  constructor(endPoint, authorization) {
-    this._endPoint = endPoint;
+  constructor(endpoint, authorization) {
+    this._endpoint = endpoint;
     this._authorization = authorization;
   }
 
   getPoints() {
-    return this._load({url: `points`})
+    return this._load({url: UrlAdress.POINTS})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
   }
 
   getOffers() {
-    return this._load({url: `offers`})
+    return this._load({url: UrlAdress.OFFERS})
       .then(Api.toJSON);
   }
 
   getDestinations() {
-    return this._load({url: `destinations`})
+    return this._load({url: UrlAdress.DESTINATIONS})
       .then(Api.toJSON);
   }
 
@@ -67,7 +67,7 @@ export default class Api {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(
-        `${this._endPoint}/${url}`,
+        `${this._endpoint}/${url}`,
         {method, body, headers}
     )
       .then(Api.checkStatus)

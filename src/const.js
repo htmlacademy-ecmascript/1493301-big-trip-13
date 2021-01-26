@@ -79,3 +79,8 @@ export const Method = {
   DELETE: `delete`
 };
 
+export const UrlAdress = {
+  POINTS: `points`,
+  OFFERS: `offers`,
+  DESTINATIONS: `destinations`
+};
