@@ -1,92 +1,77 @@
-import {EVENT_TYPES, CITIES, BLANK_POINT} from '../const';
+import {EVENT_TYPES, BLANK_POINT} from '../const';
 import {capitalize} from '../util/global';
 import {humaneEditEventTime, createPrepositions} from '../util/event';
-import {generatePhotos, generateDescription, generateOffers} from '../mock/event';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import SmartView from './smart';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-const createEventTypeItems = () => {
+
+const createEventTypeItems = (eventItem) => {
   return `
-  ${EVENT_TYPES.map((type, id) => `
+  ${EVENT_TYPES.map((type) => `
       <div class="event__type-item">
-          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-          <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">${capitalize(type)}</label>
+        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === eventItem ? `checked` : ``}>
+        <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitalize(type)}</label>
       </div>`).join(``)}
     `;
 };
 
-
-const offerTemplate = (offer) => {
-  const {id, name, price, isChecked} = offer;
-  return ` <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``} >
-                        <label class="event__offer-label" for="event-offer-${id}">
-                          <span class="event__offer-title">${name}</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">${price}</span>
-                        </label>
-                      </div>`;
+const createOffers = (offers, realtedOffers, isDisabled) => {
+  return `<h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    ${realtedOffers.map((items) => {
+    const {title, price} = items;
+    const id = title.split(` `).join(`-`);
+    const isChecked = offers.find((item) => items.title === item.title);
+    return `
+        <div class="event__available-offers"><div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked ? `checked` : ``} ${isDisabled ? `disabled` : ``} data-id=${id}>
+          <label class="event__offer-label" for="event-offer-${id}">
+            <span class="event__offer-title">${title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${price}</span>
+          </label>
+        </div>`;
+  }).join(``)}
+    </div>
+ `;
 };
 
-const createOffers = (offers) => {
-  return `
-    ${offers.map((offer) => offerTemplate(offer)).join(``)}
-    `;
-};
 
-const createEditEventTemplate = (event = {}) => {
+const createEditEventTemplate = (event, specialOffers, cities, createdNewPoint) => {
   const {
-    city,
-    eventType,
+    destination,
+    type,
     eventStart,
     eventEnd,
     offers,
     description,
     photos,
-    id,
-    price
+    price,
+    isDisabled,
+    isSaving,
+    isDeleting,
   } = event;
 
-
-  const createOffersSection = () => {
-    return `
-    ${offersTemplate}
-  `;
+  const createPhotosSection = (photoPath) => {
+    return `<img class="event__photo" src="${photoPath.src}" alt="${photoPath.description}"></img>`;
   };
 
-  const createDetailsSection = () => {
-    const offersSection = createOffersSection();
-    return `
-        ${offersSection}
-        `;
-  };
-
-  const createPhotosSection = () => {
-    return `
-    ${photos.map(({photoPath}) => `
-      <img class="event__photo" src=${photoPath}" alt="Event photo">
-    `).join(``)}
-    `;
-  };
-
-  const offersTemplate = createOffers(offers);
-  const detailsSection = createDetailsSection();
-  const photosSection = createPhotosSection();
-  const eventTypeItems = createEventTypeItems();
-  const isSaveForbidden = !dayjs(eventEnd).isAfter(dayjs(eventStart).toDate());
+  const photosSection = `${photos.map((photo) => createPhotosSection(photo)).join(``)}`;
+  const eventTypeItems = createEventTypeItems(type);
+  const possibleCities = [...cities.keys()];
+  const isSaveForbidden = !dayjs(eventEnd).isAfter(dayjs(eventStart).toDate()) || !destination;
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
-                    <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
+                    <label class="event__type  event__type-btn" for="event-type-toggle-1" ${isDisabled ? `disabled` : ``}>
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType.toLowerCase()}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
@@ -97,49 +82,44 @@ const createEditEventTemplate = (event = {}) => {
                     </div>
 
                     <div class="event__field-group  event__field-group--destination">
-                    <label class="event__label  event__type-output" for="event-destination-${city}">
-                      ${capitalize(eventType)}  ${createPrepositions(eventType)}
+                    <label class="event__label  event__type-output" for="event-destination-${destination}" ${isDisabled ? `disabled` : ``}>
+                      ${type} ${createPrepositions(type)}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
-                    <datalist id="destination-list-${id}">
-                      ${CITIES.map((name) => `<option value="${he.encode(name)}"></option>`).join(``)}
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1" ${isDisabled ? `disabled` : ``}>
+                    <datalist id="destination-list-1">
+                      ${possibleCities ? possibleCities.map((city) => `<option value="${he.encode(city)}"></option>`).join(``) : ``}
                     </datalist>
                   </div>
 
-
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input event__input--time" id="event-start-time-1" type="text" name="event-start-time" data-time="start" value="${humaneEditEventTime(eventStart)}">
+                    <input class="event__input event__input--time" id="event-start-time-1" type="text" name="event-start-time" data-time="start" value="${humaneEditEventTime(eventStart)}" ${isDisabled ? `disabled` : ``}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input event__input--time" id="event-end-time-1" type="text" name="event-end-time" data-time="end"  value="${humaneEditEventTime(eventEnd)}">
+                    <input class="event__input event__input--time" id="event-end-time-1" type="text" name="event-end-time" data-time="end"  value="${humaneEditEventTime(eventEnd)}" ${isDisabled ? `disabled` : ``}>
                   </div>
+
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}" min="1" required>
+                    <input class="event__input  event__input--price" id="event-price-$1}" type="number" name="event-price" value="${price}" min="1" required ${isDisabled ? `disabled` : ``}>
                   </div>
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaveForbidden ? `disabled` : ``}>Save</button>
-                  <button class="event__reset-btn" type="reset">Delete</button>
+
+                <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaveForbidden || isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
+                  ${!createdNewPoint ? ` <button class="event__reset-btn" type="reset">${isDeleting ? `Deleting...` : `Delete`}</button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
-                  </button>
+                  </button>` : `<button class="event__reset-btn" type="reset">Cancel</button>`}
                 </header>
-                ${(offers.length || description.length) ? `
 
               <section class="event__details">
-                  ${offers.length ? `
                     <section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                    <div class="event__available-offers">
-                    ${detailsSection}
-                    </div>
-                    </section>
-                ` : ``}
-                ${description.length ? `
+                    ${specialOffers.get(type).length ? createOffers(offers, specialOffers.get(type), isDisabled) : ``}
+                </section>
+              ${description.length ? `
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                   </section>
@@ -154,7 +134,7 @@ const createEditEventTemplate = (event = {}) => {
                     </div>
                     ` : ``}
                     </section>
-                    ` : ``}
+                    </section>
               </form>
             </li>
             `;
@@ -162,10 +142,13 @@ const createEditEventTemplate = (event = {}) => {
 
 
 export default class EditEventView extends SmartView {
-  constructor(event = BLANK_POINT) {
+  constructor(event = BLANK_POINT, specialOffers, cities, createdNewPoint = false) {
     super();
-
     this._data = EditEventView.parseEventToData(event);
+    this._specialOffers = specialOffers;
+    this._cities = cities;
+    this._createdNewPoint = createdNewPoint;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -182,7 +165,7 @@ export default class EditEventView extends SmartView {
   }
 
   getTemplate() {
-    return createEditEventTemplate(this._data);
+    return createEditEventTemplate(this._data, this._specialOffers, this._cities, this._createdNewPoint);
   }
 
   removeElement() {
@@ -226,11 +209,13 @@ export default class EditEventView extends SmartView {
   }
 
   restoreHandlers() {
-    this.setDeleteClickHandler(this._callback.deleteClick);
+    this.setDeleteClickHandler(this._callback.deletePoint);
     this._setDatepicker();
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.submit);
-    this.setCardArrowHandler(this._callback.onArrowClick);
+    if (!this._createdNewPoint) {
+      this.setCardArrowHandler(this._callback.onArrowClick);
+    }
   }
 
   _setInnerHandlers() {
@@ -240,7 +225,8 @@ export default class EditEventView extends SmartView {
     .querySelector(`.event__input--destination`).addEventListener(`change`, this._cityInputHandler, true);
     this.getElement().
     querySelector(`.event__input--price`).addEventListener(`input`, this._priceInputHandler);
-    if (this._data.offers.length) {
+
+    if (this._specialOffers.get(this._data.type).length) {
       this.getElement()
       .querySelector(`.event__available-offers`).addEventListener(`change`, this._offersChangeHandler);
     }
@@ -252,12 +238,11 @@ export default class EditEventView extends SmartView {
       return EVENT_TYPES.find((type) => type === value);
     };
     const newType = setUpNewTypes(evt.target.value);
-    const offers = generateOffers();
-    const relatedDeals = offers.get(newType);
+
 
     this.updateData({
-      eventType: newType,
-      offers: relatedDeals
+      type: newType,
+      offers: []
     });
   }
 
@@ -274,8 +259,7 @@ export default class EditEventView extends SmartView {
 
   _cityInputHandler(evt) {
     evt.preventDefault();
-
-    if (!CITIES.includes(evt.target.value)) {
+    if (![...this._cities.keys()].includes(evt.target.value)) {
       evt.target.setCustomValidity(`You can choose only from the offered range of the cities`);
       evt.target.style.background = `#ff8d85`;
       evt.target.reportValidity();
@@ -283,17 +267,25 @@ export default class EditEventView extends SmartView {
     } else {
       evt.target.style.background = `white`;
     }
-
     this.updateData({
-      city: evt.target.value,
-      description: generateDescription(),
-      photos: generatePhotos(),
+      destination: evt.target.value,
+      description: this._cities.get(evt.target.value).description,
+      photos: this._cities.get(evt.target.value).photos,
     });
   }
 
   _offersChangeHandler(evt) {
     evt.preventDefault();
     let renewSet = this._data.offers.slice();
+
+    const realtedOffers = this._specialOffers.get(this._data.type.toLowerCase());
+    const pickedOffer = evt.target.closest(`div`).querySelector(`.event__offer-title`).textContent;
+
+    if (!this._data.offers.find(({title}) => title === pickedOffer)) {
+      renewSet.push(realtedOffers.find(({title}) => title === pickedOffer));
+    } else {
+      renewSet = renewSet.filter(({title}) => title !== pickedOffer);
+    }
 
     this.updateData({
       offers: renewSet
@@ -310,11 +302,11 @@ export default class EditEventView extends SmartView {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(EditEventView.parseDataToEvent(this._data));
+    this._callback.deletePoint(EditEventView.parseDataToEvent(this._data));
   }
 
   setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
+    this._callback.deletePoint = callback;
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
   }
 
@@ -332,17 +324,30 @@ export default class EditEventView extends SmartView {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._cardArrowHandler);
   }
 
-
   setFormSubmitHandler(callback) {
     this._callback.submit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
   static parseEventToData(event) {
-    return Object.assign({}, event);
+    return Object.assign(
+        {},
+        event,
+        {
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
+        }
+    );
   }
 
   static parseDataToEvent(data) {
-    return Object.assign({}, data);
+    data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
+    return data;
   }
 }

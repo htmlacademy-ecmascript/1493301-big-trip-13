@@ -1,35 +1,21 @@
 import AbstractView from './abstract';
-import {humaneEventDate, humaneEventTime, createPrepositions} from '../util/event';
-
+import {humaneEventDate, humaneEventTime, createPrepositions, getTimeDiff} from '../util/event';
 
 const createOffers = (offers) => {
   return `<h4 class="visually-hidden">Offers:</h4>
-  ${offers.map(({name, price}) => {
+  ${offers.map(({title, price}) => {
     return `<li class="event__offer">
-                    <span class="event__offer-title">${name}</span>
+                    <span class="event__offer-title">${title}</span>
                     &plus;&euro;&nbsp;
                     <span class="event__offer-price">${price}</span>
                   </li>`;
   }).join(``)}`;
 };
 
-const getTimeDiff = (start, end) => {
-  const MS_IN_MINUTE = 60000;
-  const timeDiff = end - start;
-  const msInHour = MS_IN_MINUTE * 60;
-  const msInDay = 24 * MS_IN_MINUTE * 60;
-
-  const days = Math.floor(timeDiff / msInDay);
-  const hours = Math.floor((timeDiff - days * msInDay) / msInHour);
-  const minutes = Math.floor((timeDiff - days * msInDay - hours * msInHour) / MS_IN_MINUTE);
-
-  return `${days > 0 ? `${days}D` : ``} ${hours > 0 ? `${hours}H` : `00H`} ${minutes > 0 ? `${minutes}M` : `00M`}`;
-};
-
 const createEventTemplate = (event) => {
   const {
-    eventType,
-    city,
+    type,
+    destination,
     eventStart,
     eventEnd,
     isFavorite,
@@ -37,11 +23,8 @@ const createEventTemplate = (event) => {
     price
   } = event;
 
-
   const duration = getTimeDiff(eventStart, eventEnd);
-
   const offersTemplate = offers ? createOffers(offers) : ``;
-
   const favoriteClassName = isFavorite
     ? `event__favorite-btn--active`
     : ``;
@@ -50,9 +33,9 @@ const createEventTemplate = (event) => {
               <div class="event">
                 <time class="event__date" datetime="${eventStart}">${humaneEventDate(eventStart)}</time>
                 <div class="event__type">
-                  <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
+                  <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${eventType} ${createPrepositions(eventType)} ${city}</h3>
+                <h3 class="event__title">${type} ${createPrepositions(type)} ${destination}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime="${eventStart}">${humaneEventTime(eventStart)}</time>
@@ -103,7 +86,6 @@ export default class EventView extends AbstractView {
     this._callback.onEditClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
   }
-
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
