@@ -79,7 +79,7 @@ export const Method = {
   DELETE: `delete`
 };
 
-export const UrlAdress = {
+export const UrlAddress = {
   POINTS: `points`,
   OFFERS: `offers`,
   DESTINATIONS: `destinations`

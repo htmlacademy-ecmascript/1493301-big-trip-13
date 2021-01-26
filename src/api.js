@@ -1,5 +1,5 @@
 import PointsModel from './model/points';
-import {Method, UrlAdress} from './const';
+import {Method, UrlAddress} from './const';
 
 
 const SuccessHTTPStatusRange = {
@@ -14,18 +14,18 @@ export default class Api {
   }
 
   getPoints() {
-    return this._load({url: UrlAdress.POINTS})
+    return this._load({url: UrlAddress.POINTS})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
   }
 
   getOffers() {
-    return this._load({url: UrlAdress.OFFERS})
+    return this._load({url: UrlAddress.OFFERS})
       .then(Api.toJSON);
   }
 
   getDestinations() {
-    return this._load({url: UrlAdress.DESTINATIONS})
+    return this._load({url: UrlAddress.DESTINATIONS})
       .then(Api.toJSON);
   }
 
