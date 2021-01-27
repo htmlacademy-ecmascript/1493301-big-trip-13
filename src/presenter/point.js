@@ -1,18 +1,17 @@
 import EventView from '../view/event';
 import EditEventView from '../view/edit-event';
 import {render, replace, remove} from '../util/render';
-import {RenderPosition, ESC_BUTTON, OperatingMode, UserAction, UpdateType} from '../const';
+import {RenderPosition, ESC_BUTTON, OperatingMode, UserAction, UpdateType, State} from '../const';
 
 
 export default class PointPresenter {
-  constructor(eventsListContainer, changeData, changeMode) {
+  constructor(eventsListContainer, offersModel, destinationsModel, changeData, changeMode) {
     this._eventsListContainer = eventsListContainer;
-
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._changeData = changeData;
     this._changeMode = changeMode;
-
     this._mode = OperatingMode.DEFAULT;
-
     this._eventComponent = null;
     this._eventEditComponent = null;
 
@@ -31,16 +30,20 @@ export default class PointPresenter {
     const prevEventEditComponent = this._eventEditComponent;
 
     this._eventComponent = new EventView(routePoint);
-    this._eventEditComponent = new EditEventView(routePoint);
+    this._eventEditComponent = new EditEventView(routePoint, this._offersModel.getAllOffers(), this._destinationsModel.getDestinations());
 
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._eventComponent.setEditClickHandler(this._handleEditClick);
-    this._eventEditComponent.setCardArrowHandler(this._handleArrowClick);
+
+    if (!this._eventEditComponent._createdNewPoint) {
+      this._eventEditComponent.setCardArrowHandler(this._handleArrowClick);
+    }
+
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventComponent.setClickFavoriteHandler(this._handleClickFavorite);
 
 
-    if (prevEventComponent === null || prevEventEditComponent === null) {
+    if (prevEventComponent === null) {
       render(this._eventsListContainer, this._eventComponent, RenderPosition.BEFOREEND);
       return;
     }
@@ -50,7 +53,8 @@ export default class PointPresenter {
     }
 
     if (this._mode === OperatingMode.EDITING) {
-      replace(this._eventEditComponent, prevEventEditComponent);
+      replace(this._eventComponent, prevEventEditComponent);
+      this._mode = OperatingMode.DEFAULT;
     }
 
     remove(prevEventComponent);
@@ -98,7 +102,6 @@ export default class PointPresenter {
         UpdateType.MINOR,
         update
     );
-    this._replaceFormToCard();
   }
 
   _handleArrowClick() {
@@ -112,6 +115,7 @@ export default class PointPresenter {
         routePoint
     );
   }
+
   _handleClickFavorite() {
     this._changeData(
         UserAction.UPDATE_POINT,
@@ -125,4 +129,34 @@ export default class PointPresenter {
         )
     );
   }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.ABORTING:
+        this._eventComponent.shake(resetFormState);
+        this._eventEditComponent.shake(resetFormState);
+        break;
+    }
+  }
 }
+

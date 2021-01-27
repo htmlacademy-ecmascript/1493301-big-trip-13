@@ -1,28 +1,30 @@
 import EditEventView from '../view/edit-event';
-import {generateId} from '../util/global';
 import {remove, render} from '../util/render';
-import {RenderPosition, UserAction, UpdateType, ESC_BUTTON} from '../const';
+import {RenderPosition, UserAction, UpdateType, ESC_BUTTON, BLANK_POINT} from '../const';
 
-export default class NewPointPresenter {
-  constructor(eventListContainer, changeData) {
-    this._eventListContainer = eventListContainer;
+export default class NewEventPresenter {
+  constructor(eventsListContainer, offersModel, destinationsModel, changeData) {
+    this._eventsListContainer = eventsListContainer;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._changeData = changeData;
+    this._destroyCallback = null;
 
     this._eventEditComponent = null;
 
-    this._cardArrowHandler = this._cardArrowHandler.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init() {
-    this._eventEditComponent = new EditEventView();
-    this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
-    this._eventEditComponent.setCardArrowHandler(this._cardArrowHandler);
+  init(callback) {
+    this._destroyCallback = callback;
 
-    render(this._eventListContainer, this._eventEditComponent, RenderPosition.AFTERBEGIN);
+    this._eventEditComponent = new EditEventView(BLANK_POINT, this._offersModel.getAllOffers(), this._destinationsModel.getDestinations(), true);
+    this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+
+    render(this._eventsListContainer, this._eventEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
@@ -30,6 +32,10 @@ export default class NewPointPresenter {
   destroy() {
     if (this._eventEditComponent === null) {
       return;
+    }
+
+    if (this._destroyCallback) {
+      this._destroyCallback();
     }
 
     remove(this._eventEditComponent);
@@ -42,12 +48,8 @@ export default class NewPointPresenter {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({id: generateId()}, event)
+        event
     );
-    this.destroy();
-  }
-
-  _cardArrowHandler() {
     this.destroy();
   }
 
@@ -61,4 +63,24 @@ export default class NewPointPresenter {
       this.destroy();
     }
   }
+
+  setSaving() {
+    this._eventEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+    this._eventEditComponent.shake(resetFormState);
+  }
 }
+
+

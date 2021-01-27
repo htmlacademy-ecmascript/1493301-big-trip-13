@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
 import {TRANSFER_EVENTS} from '../const';
-import {formatDateToIso} from '../util/global';
-
 
 export const humaneEventDate = (dueDate) => {
   return dayjs(dueDate).format(`D MMM`);
 };
+
 
 export const humaneEventTime = (dueDate) => {
   return dayjs(dueDate).format(`HH:mm`);
@@ -19,35 +18,23 @@ export const createPrepositions = (type) => {
   return TRANSFER_EVENTS.includes(type) ? `to` : `in`;
 };
 
-
-const getFormatedDate = (date) => {
-  return formatDateToIso(date).slice();
+export const getTimeDiff = (start, end) => {
+  let duration = ``;
+  const dayDuration = dayjs(end).diff(dayjs(start), `day`);
+  const hourDuration = dayjs(end).diff(dayjs(start), `hour`) % 24;
+  const minuteDuration = dayjs(end).diff(dayjs(start), `minute`) % 60;
+  duration += dayDuration ? dayDuration.toString().padStart(2, `0`) + `D ` : ``;
+  duration += (dayDuration || hourDuration) ? hourDuration.toString().padStart(2, `0`) + `H ` : ``;
+  duration += minuteDuration ? minuteDuration.toString().padStart(2, `0`) + `M ` : ``;
+  return duration;
 };
-
-const createDayDates = (routePoints) => {
-  const dates = routePoints.map((routePoint) => getFormatedDate(routePoint.eventStart));
-  const datesSet = new Set(dates);
-  const inimitableDates = Array.from(datesSet);
-
-  return inimitableDates;
-};
-
-export const generateDays = (routePoints) => {
-  const dates = createDayDates(routePoints);
-
-  return dates.map((date) => {
-    const matchPoints = routePoints.filter((routePoint) => getFormatedDate(routePoint.eventStart) === date);
-
-    return {
-      date,
-      dayPoints: matchPoints
-    };
-  });
-};
-
 
 export const sortByDate = (a, b) => {
-  return a.eventStart.getTime() - b.eventStart.getTime();
+  return dayjs(a.eventStart).diff(b.eventStart);
+};
+
+export const sortByDuration = (a, b) => {
+  return dayjs(b.eventStart).diff(b.eventEnd, `minute`) - dayjs(a.eventStart).diff(a.eventEnd, `minute`);
 };
 
 export const sortByPrice = (a, b) =>{
@@ -59,10 +46,3 @@ export const sortByPrice = (a, b) =>{
     return 0;
   }
 };
-
-export const sortByDuration = (first, second) => {
-  const firstDuration = first.eventStart.getTime() - first.eventEnd.getTime();
-  const secondDuration = second.eventStart.getTime() - second.eventEnd.getTime();
-  return secondDuration - firstDuration;
-};
-

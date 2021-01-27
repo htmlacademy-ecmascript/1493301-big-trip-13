@@ -2,28 +2,6 @@ export const EVENT_TYPES = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`
 
 export const TRANSFER_EVENTS = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
 
-export const CITIES = [`Luxembourg`, `Trier`, `Paris`, `Bernkastel-Kues`, `Strasbourg`, `Aachen`, `Barcelona`, `Sant Pol de Mar`, `London`, `Dublin`, `Cabo da Roca`, `Geneva`, `Chamonix`, `Amsterdam`];
-
-export const EVENT_OFFERS = [
-  `Add luggage`,
-  `Add meal`,
-  `Switch to comfort`,
-  `Choose seats`,
-  `Book tickets`,
-  `Lunch in the city`,
-  `Excursion with a guide`,
-  `Child safety seat`,
-  `Order room service`,
-  `Late checkout`,
-  `Airport transfer`,
-  `Add breakfast`,
-  `Travel by train`,
-  `Rent a car`,
-  `Order a taxi`,
-  `Order VIP service`,
-  `Upgrade to business class`
-];
-
 export const SortTypes = {
   DAY: `day`,
   EVENT: `event`,
@@ -33,10 +11,10 @@ export const SortTypes = {
 };
 
 export const BLANK_POINT = {
-  city: ``,
+  destination: ``,
   description: ``,
   photos: [],
-  eventType: `drive`,
+  type: `drive`,
   offers: [],
   eventStart: new Date(),
   eventEnd: new Date(),
@@ -59,15 +37,14 @@ export const RenderPosition = {
 
 export const FilterTypes = {
   EVERYTHING: `everything`,
-  FUTURE: `future`,
-  PAST: `past`
+  PAST: `past`,
+  FUTURE: `future`
 };
 
 export const MenuTabs = {
-  TABLE: `table`,
-  STATS: `stats`
+  TABLE: `Table`,
+  STATS: `Stats`
 };
-
 
 export const UserAction = {
   UPDATE_POINT: `updatepoint`,
@@ -78,5 +55,32 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `patch`,
   MINOR: `minor`,
-  MAJOR: `major`
+  MAJOR: `major`,
+  INIT: `init`
+};
+
+export const StatisticsCharts = {
+  TIME: `time`,
+  MONEY: `money`,
+  TYPE: `transport`
+
+};
+
+export const State = {
+  SAVING: `saving`,
+  DELETING: `deleting`,
+  ABORTING: `aborting`
+};
+
+export const Method = {
+  GET: `get`,
+  PUT: `put`,
+  POST: `post`,
+  DELETE: `delete`
+};
+
+export const UrlAddress = {
+  POINTS: `points`,
+  OFFERS: `offers`,
+  DESTINATIONS: `destinations`
 };
