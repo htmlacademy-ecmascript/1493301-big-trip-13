@@ -84,3 +84,9 @@ export const UrlAddress = {
   OFFERS: `offers`,
   DESTINATIONS: `destinations`
 };
+
+export const StoreLabels = {
+  POINTS: `points`,
+  OFFERS: `offers`,
+  DESTINATION: `destinations`
+};

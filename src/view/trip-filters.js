@@ -40,4 +40,14 @@ export default class TripFiltersView extends AbstractView {
     this._callback.filterTypeChange = callback;
     this.getElement().addEventListener(`change`, this._filterTypeChangeHandler);
   }
+
+  proscribeFilters() {
+    const filters = this.getElement().querySelectorAll(`.trip-filters__filter-input`);
+    filters.forEach((filter) => filter.setAttribute(`disabled`, ``));
+  }
+
+  activateFilters() {
+    const filters = this.getElement().querySelectorAll(`.trip-filters__filter-input`);
+    filters.forEach((filter) => filter.removeAttribute(`disabled`));
+  }
 }

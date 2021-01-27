@@ -1,7 +1,6 @@
 import {FilterTypes} from '../const';
 import dayjs from 'dayjs';
 
-
 const isPastPoint = (date) => {
   return date === null ? false : dayjs().isAfter(date);
 };

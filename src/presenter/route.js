@@ -8,7 +8,8 @@ import {sortByDate, sortByPrice, sortByDuration} from '../util/event';
 import {FILTER} from '../util/filter';
 import NewPointPresenter from './new-point';
 import LoadingView from '../view/events-loading';
-
+import {isOnline} from '../util/global';
+import TripInfoView from '../view/trip-info';
 
 export default class RoutePresenter {
   constructor(routeMainContainer, routePointsContainer, pointsModel, filterModel, destinationsModel, offersModel, api) {
@@ -21,11 +22,12 @@ export default class RoutePresenter {
     this._sortingComponent = null;
     this._routeMainContainer = routeMainContainer;
     this._routePointsContainer = routePointsContainer;
-
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
     this._api = api;
+
     this._isLoading = true;
+    this._routeInfoComponent = null;
 
     this._eventsListComponent = new ListView();
     this._emptyListComponent = new EmptyListView();
@@ -42,6 +44,7 @@ export default class RoutePresenter {
   init() {
     this._renderPointsList();
     this._renderRoute();
+    this._renderRouteInfo();
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -49,7 +52,7 @@ export default class RoutePresenter {
     this._offersModel.addObserver(this._handleModelEvent);
   }
 
-  createEvent(callback) {
+  createPoint(callback) {
     this._currentSortType = SortTypes.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
     this._newPointPresenter.init(callback);
@@ -166,19 +169,27 @@ export default class RoutePresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this._pointPresenter[data.id].init(data);
+        if (!isOnline()) {
+          window.addEventListener(`online`, () => {
+            this._pointPresenter[data.id].init(data);
+          });
+        }
         break;
       case UpdateType.MINOR:
         this._clearRoute();
         this._renderRoute();
+        this._renderRouteInfo();
         break;
       case UpdateType.MAJOR:
         this._clearRoute(true);
         this._renderRoute();
+        this._renderRouteInfo();
         break;
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderRoute();
+        this._renderRouteInfo();
         break;
     }
   }
@@ -205,6 +216,20 @@ export default class RoutePresenter {
     render(this._routePointsContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
   }
 
+  _renderRouteInfo() {
+    if (!this._pointsModel.getPoints().length) {
+      return;
+    }
+
+    if (this._routeInfoComponent !== null) {
+      remove(this._routeInfoComponent);
+      this._routeInfoComponent = null;
+    }
+
+    this._routeInfoComponent = new TripInfoView(this._pointsModel.getPoints());
+    render(this._routeMainContainer, this._routeInfoComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderRoute() {
     if (this._isLoading) {
       this._renderLoading();
@@ -218,9 +243,8 @@ export default class RoutePresenter {
       this._renderEmptyList();
       return;
     }
-
+    this._renderRouteInfo();
     this._renderSort();
     this._renderRoutePoints(routePoints);
   }
 }
-

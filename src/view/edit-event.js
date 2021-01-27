@@ -7,7 +7,6 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-
 const createEventTypeItems = (eventItem) => {
   return `
   ${EVENT_TYPES.map((type) => `

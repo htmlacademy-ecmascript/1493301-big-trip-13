@@ -2,7 +2,8 @@ import EventView from '../view/event';
 import EditEventView from '../view/edit-event';
 import {render, replace, remove} from '../util/render';
 import {RenderPosition, ESC_BUTTON, OperatingMode, UserAction, UpdateType, State} from '../const';
-
+import {isOnline} from '../util/global';
+import {toast} from '../util/toast';
 
 export default class PointPresenter {
   constructor(eventsListContainer, offersModel, destinationsModel, changeData, changeMode) {
@@ -93,10 +94,21 @@ export default class PointPresenter {
   }
 
   _handleEditClick() {
+    if (!isOnline()) {
+      toast(`You can't edit point offline`);
+      return;
+    }
+
     this._replaceCardToForm();
   }
 
   _handleFormSubmit(update) {
+    if (!isOnline()) {
+      toast(`You can't save point offline`);
+      this.setViewState(State.ABORTING);
+      return;
+    }
+
     this._changeData(
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
@@ -109,6 +121,12 @@ export default class PointPresenter {
   }
 
   _handleDeleteClick(routePoint) {
+    if (!isOnline()) {
+      toast(`You can't delete event offline`);
+      this.setViewState(State.ABORTING);
+      return;
+    }
+
     this._changeData(
         UserAction.DELETE_POINT,
         UpdateType.MINOR,

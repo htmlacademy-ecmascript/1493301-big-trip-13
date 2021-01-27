@@ -5,7 +5,6 @@ export const humaneEventDate = (dueDate) => {
   return dayjs(dueDate).format(`D MMM`);
 };
 
-
 export const humaneEventTime = (dueDate) => {
   return dayjs(dueDate).format(`HH:mm`);
 };
@@ -34,15 +33,29 @@ export const sortByDate = (a, b) => {
 };
 
 export const sortByDuration = (a, b) => {
-  return dayjs(b.eventStart).diff(b.eventEnd, `minute`) - dayjs(a.eventStart).diff(a.eventEnd, `minute`);
+  return dayjs(b.eventEnd).diff(b.eventStart, `minute`) - dayjs(a.eventEnd).diff(a.eventStart, `minute`);
 };
 
 export const sortByPrice = (a, b) =>{
-  if (a.price < b.price) {
+  if (b.price < a.price) {
     return -1;
-  } else if (a.price > b.price) {
+  } else if (b.price > a.price) {
     return 1;
   } else {
     return 0;
   }
+};
+
+export const getRouteDates = (events) => {
+  const routeFisrtDate = dayjs(events[0].eventStart).format(`MMM DD HH:mm`);
+  const routeLastDate = dayjs(events[events.length - 1].eventEnd).format(`MMM DD HH:mm`);
+  return [routeFisrtDate, routeLastDate];
+};
+
+export const getRouteTotalCost = (events) => {
+  return events.reduce(((eventsAcc, event) => {
+    const eventOffersTotalPrice = event.offers
+      .reduce(((offersAcc, offer) => offersAcc + offer.price), 0);
+    return eventOffersTotalPrice + eventsAcc + event.price;
+  }), 0);
 };

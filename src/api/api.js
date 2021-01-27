@@ -1,6 +1,5 @@
-import PointsModel from './model/points';
-import {Method, UrlAddress} from './const';
-
+import PointsModel from '../model/points';
+import {Method, UrlAddress} from '../const';
 
 const SuccessHTTPStatusRange = {
   MIN: 200,
@@ -31,7 +30,7 @@ export default class Api {
 
   updatePoint(event) {
     return this._load({
-      url: `points/${event.id}`,
+      url: `${UrlAddress.POINTS}/${event.id}`,
       method: Method.PUT,
       body: JSON.stringify(PointsModel.adaptToServer(event)),
       headers: new Headers({"Content-Type": `application/json`})
@@ -42,7 +41,7 @@ export default class Api {
 
   addPoint(event) {
     return this._load({
-      url: `points`,
+      url: `${UrlAddress.POINTS}`,
       method: Method.POST,
       body: JSON.stringify(PointsModel.adaptToServer(event)),
       headers: new Headers({"Content-Type": `application/json`})
@@ -53,9 +52,19 @@ export default class Api {
 
   deletePoint(event) {
     return this._load({
-      url: `points/${event.id}`,
+      url: `${UrlAddress.POINTS}/${event.id}`,
       method: Method.DELETE
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `${UrlAddress.POINTS}/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
   }
 
   _load({
@@ -81,7 +90,6 @@ export default class Api {
     ) {
       throw new Error(`${response.status}: ${response.statusText}`);
     }
-
     return response;
   }
 

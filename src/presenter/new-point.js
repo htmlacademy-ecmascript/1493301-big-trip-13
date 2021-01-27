@@ -1,6 +1,8 @@
 import EditEventView from '../view/edit-event';
 import {remove, render} from '../util/render';
 import {RenderPosition, UserAction, UpdateType, ESC_BUTTON, BLANK_POINT} from '../const';
+import {isOnline} from '../util/global';
+import {toast} from '../util/toast';
 
 export default class NewEventPresenter {
   constructor(eventsListContainer, offersModel, destinationsModel, changeData) {
@@ -45,6 +47,11 @@ export default class NewEventPresenter {
   }
 
   _handleFormSubmit(event) {
+    if (!isOnline()) {
+      this._eventEditComponent.shake();
+      toast(`You can't save point offline`);
+      return;
+    }
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,

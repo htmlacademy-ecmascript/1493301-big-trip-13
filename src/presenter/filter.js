@@ -58,4 +58,12 @@ export default class FilterPresenter {
       };
     });
   }
+
+  proscribeFilters() {
+    this._filterComponent.proscribeFilters();
+  }
+
+  activateFilters() {
+    this._filterComponent.proscribeFilters();
+  }
 }

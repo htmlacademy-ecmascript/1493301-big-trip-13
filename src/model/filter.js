@@ -13,6 +13,6 @@ export default class FilterModel extends Observer {
 
   setFilter(updateType, filter) {
     this._currentFilter = filter;
-    this._notify(updateType, filter);
+    this.notify(updateType, filter);
   }
 }
