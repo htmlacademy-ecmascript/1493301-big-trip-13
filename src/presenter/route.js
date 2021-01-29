@@ -59,7 +59,7 @@ export default class RoutePresenter {
   }
 
   destroy() {
-    this._clearRoute(true);
+    this._clearRoute({resetSortType: true});
     remove(this._eventsListComponent);
 
     this._pointsModel.removeObserver(this._handleModelEvent);
@@ -74,13 +74,14 @@ export default class RoutePresenter {
     const filteredPoints = FILTER[filterType](routePoints);
 
     switch (this._currentSortType) {
+      case SortTypes.DAY:
+        return filteredPoints.sort(sortByDate);
       case SortTypes.TIME:
         return filteredPoints.sort(sortByDuration);
       case SortTypes.PRICE:
         return filteredPoints.sort(sortByPrice);
-      default:
-        return filteredPoints.sort(sortByDate);
     }
+    return filteredPoints;
   }
 
   _handlerSortTypeChange(sortType) {

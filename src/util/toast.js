@@ -1,17 +1,23 @@
-const SHOW_TIME = 5000;
+const SHOW_TIME = 2000;
 
 const popUpContainerElement = document.createElement(`div`);
 popUpContainerElement.classList.add(`toast-container`);
 document.body.append(popUpContainerElement);
 
 export const toast = (message) => {
-  const popUpItem = document.createElement(`div`);
-  popUpItem.textContent = message;
-  popUpItem.classList.add(`toast-item`);
+  if (!Array.from(document.querySelectorAll(`.toast-item`)).find((element) => element.textContent === message)) {
+    const popUptItem = document.createElement(`div`);
+    popUptItem.textContent = message;
+    popUptItem.classList.add(`toast-item`);
 
-  popUpContainerElement.append(popUpItem);
+    popUpContainerElement.append(popUptItem);
 
-  setTimeout(() => {
-    popUpItem.remove();
-  }, SHOW_TIME);
+    window.addEventListener(`online`, () => {
+      popUptItem.remove();
+    });
+
+    setTimeout(() => {
+      popUptItem.remove();
+    }, SHOW_TIME);
+  }
 };

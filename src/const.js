@@ -90,3 +90,12 @@ export const StoreLabels = {
   OFFERS: `offers`,
   DESTINATION: `destinations`
 };
+
+export const Color = {
+  BACKDROP: `#ffffff`,
+  TEXT: `#000000`,
+};
+
+export const BAR_HEIGHT = 55;
+
+

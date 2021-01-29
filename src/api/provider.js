@@ -107,7 +107,7 @@ export default class Provider {
     return Promise.resolve(storeDestination);
   }
 
-  getisSynced() {
+  getIsSynced() {
     return this._isSynced;
   }
 

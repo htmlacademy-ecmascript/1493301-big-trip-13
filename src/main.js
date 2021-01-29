@@ -10,7 +10,7 @@ import DestinationsModel from './model/destinations';
 import StatsView from './view/stats';
 import Api from './api/api';
 import {isOnline} from './util/global';
-import Store from './api/store.js';
+import Store from './api/store';
 import Provider from './api/provider';
 import {toast} from './util/toast';
 import ConnectionErrorView from './view/connection-error';
@@ -116,7 +116,7 @@ window.addEventListener(`online`, () => {
 
   remove(connectionErrorComponent);
 
-  if (!apiWithProvider.getisSynced()) {
+  if (!apiWithProvider.getIsSynced()) {
     apiWithProvider.sync();
   }
 });

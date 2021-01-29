@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract';
 
 const createCorrectionErrorWarning = () => `<div class="page-header__error">
 <div class="page-header__error-connection">Internet connection error!</div>

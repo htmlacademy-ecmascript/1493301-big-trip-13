@@ -8,8 +8,8 @@ export default class FilterPresenter {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._pointsModel = pointsModel;
-    this._currentFilter = null;
 
+    this._currentFilter = null;
     this._filterComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -64,6 +64,7 @@ export default class FilterPresenter {
   }
 
   activateFilters() {
-    this._filterComponent.proscribeFilters();
+    this._filterComponent.activateFilters();
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
   }
 }
