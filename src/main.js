@@ -1,7 +1,7 @@
 import RoutePresenter from './presenter/route';
 import PointsModel from './model/points';
 import SiteMenuView from './view/site-menu';
-import {RenderPosition, MenuTabs, UpdateType} from './const';
+import {RenderPositions, MenuTabs, UpdateTypes} from './const';
 import {render, remove} from './util/render';
 import FilterModel from './model/filter';
 import FilterPresenter from './presenter/filter';
@@ -76,7 +76,7 @@ const handleMenuTabsClick = (MenuTab) => {
       filterPresenter.proscribeFilters();
       routePresenter.destroy();
       statisticsComponent = new StatsView(pointsModel.getPoints());
-      render(routeEventsElement, statisticsComponent, RenderPosition.BEFOREEND);
+      render(routeEventsElement, statisticsComponent, RenderPositions.BEFOREEND);
       break;
   }
 };
@@ -95,13 +95,13 @@ Promise.all([
   .then(([offers, destinations, events]) => {
     offersModel.setOffers(offers);
     destinationsModel.setDestinations(destinations);
-    pointsModel.setPoints(UpdateType.INIT, events);
-    render(routeControlsElements, menuComponent, RenderPosition.AFTERBEGIN);
+    pointsModel.setPoints(UpdateTypes.INIT, events);
+    render(routeControlsElements, menuComponent, RenderPositions.AFTERBEGIN);
     menuComponent.setMenuTabsClickHandler(handleMenuTabsClick);
   })
   .catch(() => {
-    pointsModel.setPoints(UpdateType.INIT, []);
-    render(routeControlsElements, menuComponent, RenderPosition.AFTERBEGIN);
+    pointsModel.setPoints(UpdateTypes.INIT, []);
+    render(routeControlsElements, menuComponent, RenderPositions.AFTERBEGIN);
     menuComponent.setMenuTabsClickHandler(handleMenuTabsClick);
   });
 
@@ -124,5 +124,5 @@ window.addEventListener(`online`, () => {
 window.addEventListener(`offline`, () => {
   document.title += ` [offline]`;
 
-  render(routeMainElement, connectionErrorComponent, RenderPosition.AFTERBEGIN);
+  render(routeMainElement, connectionErrorComponent, RenderPositions.AFTERBEGIN);
 });

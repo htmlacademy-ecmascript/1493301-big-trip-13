@@ -3,7 +3,7 @@ import ListView from '../view/list';
 import SortingView from '../view/trip-sorting';
 import PointPresenter from './point';
 import {render, remove} from '../util/render';
-import {SortTypes, RenderPosition, UserAction, UpdateType, FilterTypes, State} from '../const';
+import {SortTypes, RenderPositions, UserActions, UpdateTypes, FilterTypes, States} from '../const';
 import {sortByDate, sortByPrice, sortByDuration} from '../util/event';
 import {FILTER} from '../util/filter';
 import NewPointPresenter from './new-point';
@@ -54,7 +54,7 @@ export default class RoutePresenter {
 
   createPoint(callback) {
     this._currentSortType = SortTypes.DAY;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
+    this._filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
     this._newPointPresenter.init(callback);
   }
 
@@ -102,23 +102,23 @@ export default class RoutePresenter {
 
     this._sortingComponent = new SortingView(this._currentSortType);
     this._sortingComponent.setSortTypeChangeHandler(this._handlerSortTypeChange);
-    render(this._routePointsContainer, this._sortingComponent, RenderPosition.AFTERBEGIN);
+    render(this._routePointsContainer, this._sortingComponent, RenderPositions.AFTERBEGIN);
   }
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this._pointPresenter[update.id].setViewState(State.SAVING);
+      case UserActions.UPDATE_POINT:
+        this._pointPresenter[update.id].setViewState(States.SAVING);
 
         this._api.updatePoint(update)
           .then((response) => {
             this._pointsModel.updatePoint(updateType, response);
           })
           .catch(() => {
-            this._pointPresenter[update.id].setViewState(State.ABORTING);
+            this._pointPresenter[update.id].setViewState(States.ABORTING);
           });
         break;
-      case UserAction.ADD_POINT:
+      case UserActions.ADD_POINT:
         this._newPointPresenter.setSaving();
 
         this._api.addPoint(update)
@@ -129,15 +129,15 @@ export default class RoutePresenter {
             this._newPointPresenter.setAborting();
           });
         break;
-      case UserAction.DELETE_POINT:
-        this._pointPresenter[update.id].setViewState(State.DELETING);
+      case UserActions.DELETE_POINT:
+        this._pointPresenter[update.id].setViewState(States.DELETING);
 
         this._api.deletePoint(update)
           .then(() => {
             this._pointsModel.deletePoint(updateType, update);
           })
           .catch(() => {
-            this._pointPresenter[update.id].setViewState(State.ABORTING);
+            this._pointPresenter[update.id].setViewState(States.ABORTING);
           });
         break;
     }
@@ -168,7 +168,7 @@ export default class RoutePresenter {
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
-      case UpdateType.PATCH:
+      case UpdateTypes.PATCH:
         this._pointPresenter[data.id].init(data);
         if (!isOnline()) {
           window.addEventListener(`online`, () => {
@@ -176,17 +176,17 @@ export default class RoutePresenter {
           });
         }
         break;
-      case UpdateType.MINOR:
+      case UpdateTypes.MINOR:
         this._clearRoute();
         this._renderRoute();
         this._renderRouteInfo();
         break;
-      case UpdateType.MAJOR:
+      case UpdateTypes.MAJOR:
         this._clearRoute(true);
         this._renderRoute();
         this._renderRouteInfo();
         break;
-      case UpdateType.INIT:
+      case UpdateTypes.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderRoute();
@@ -196,7 +196,7 @@ export default class RoutePresenter {
   }
 
   _renderLoading() {
-    render(this._routePointsContainer, this._loadingComponent, RenderPosition.BEFOREEND);
+    render(this._routePointsContainer, this._loadingComponent, RenderPositions.BEFOREEND);
   }
 
   _renderPoint(points) {
@@ -210,11 +210,11 @@ export default class RoutePresenter {
   }
 
   _renderEmptyList() {
-    render(this._routePointsContainer, this._emptyListComponent, RenderPosition.BEFOREEND);
+    render(this._routePointsContainer, this._emptyListComponent, RenderPositions.BEFOREEND);
   }
 
   _renderPointsList() {
-    render(this._routePointsContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
+    render(this._routePointsContainer, this._eventsListComponent, RenderPositions.BEFOREEND);
   }
 
   _renderRouteInfo() {
@@ -228,7 +228,7 @@ export default class RoutePresenter {
     }
 
     this._routeInfoComponent = new TripInfoView(this._pointsModel.getPoints());
-    render(this._routeMainContainer, this._routeInfoComponent, RenderPosition.AFTERBEGIN);
+    render(this._routeMainContainer, this._routeInfoComponent, RenderPositions.AFTERBEGIN);
   }
 
   _renderRoute() {

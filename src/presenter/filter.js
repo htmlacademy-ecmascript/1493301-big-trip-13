@@ -1,7 +1,7 @@
 import TripFiltersView from '../view/trip-filters';
 import {render, replace, remove} from '../util/render';
 import {FILTER} from '../util/filter';
-import {RenderPosition, FilterTypes, UpdateType} from '../const';
+import {RenderPositions, FilterTypes, UpdateTypes} from '../const';
 
 export default class FilterPresenter {
   constructor(filterContainer, filterModel, pointsModel) {
@@ -29,7 +29,7 @@ export default class FilterPresenter {
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
+      render(this._filterContainer, this._filterComponent, RenderPositions.BEFOREEND);
       return;
     }
 
@@ -46,7 +46,7 @@ export default class FilterPresenter {
       return;
     }
 
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.setFilter(UpdateTypes.MAJOR, filterType);
   }
 
   _getFilters() {
@@ -65,6 +65,6 @@ export default class FilterPresenter {
 
   activateFilters() {
     this._filterComponent.activateFilters();
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
+    this._filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
   }
 }

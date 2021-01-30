@@ -1,7 +1,11 @@
 import PointsModel from '../model/points';
-import {StoreLabels} from '../const';
 import {isOnline} from '../util/global';
 
+const StoreLabels = {
+  POINTS: `points`,
+  OFFERS: `offers`,
+  DESTINATION: `destinations`
+};
 
 const getPointsSyncronized = (items) => {
   return items.filter(({success}) => success)

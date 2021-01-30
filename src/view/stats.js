@@ -2,7 +2,14 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart';
 import {countMoneyAmount, countPointsAmount, countTimeAmount} from '../util/stats';
-import {EVENT_TYPES, StatisticsCharts, Color, BAR_HEIGHT} from '../const';
+import {EVENT_TYPES, StatisticsCharts} from '../const';
+
+const Colors = {
+  BACKDROP: `#ffffff`,
+  TEXT: `#000000`,
+};
+
+const BAR_HEIGHT = 55;
 
 const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) => {
   return {
@@ -12,8 +19,8 @@ const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) 
       labels: chartLabel,
       datasets: [{
         data: chartData,
-        backgroundColor: Color.BACKDROP,
-        hoverBackgroundColor: Color.BACKDROP,
+        backgroundColor: Colors.BACKDROP,
+        hoverBackgroundColor: Colors.BACKDROP,
         anchor: `start`
       }]
     },
@@ -23,7 +30,7 @@ const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) 
           font: {
             size: 15
           },
-          color: Color.TEXT,
+          color: Colors.TEXT,
           anchor: `end`,
           align: `start`,
           formatter: chartFormatter
@@ -32,14 +39,14 @@ const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) 
       title: {
         display: true,
         text: `${chartHedings}`,
-        fontColor: Color.TEXT,
+        fontColor: Colors.TEXT,
         fontSize: 25,
         position: `left`
       },
       scales: {
         yAxes: [{
           ticks: {
-            fontColor: Color.TEXT,
+            fontColor: Colors.TEXT,
             padding: 10,
             fontSize: 15,
           },

@@ -1,5 +1,17 @@
 import PointsModel from '../model/points';
-import {Method, UrlAddress} from '../const';
+
+const Methods = {
+  GET: `get`,
+  PUT: `put`,
+  POST: `post`,
+  DELETE: `delete`
+};
+
+const UrlAddresses = {
+  POINTS: `points`,
+  OFFERS: `offers`,
+  DESTINATIONS: `destinations`
+};
 
 const SuccessHTTPStatusRange = {
   MIN: 200,
@@ -13,25 +25,25 @@ export default class Api {
   }
 
   getPoints() {
-    return this._load({url: UrlAddress.POINTS})
+    return this._load({url: UrlAddresses.POINTS})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
   }
 
   getOffers() {
-    return this._load({url: UrlAddress.OFFERS})
+    return this._load({url: UrlAddresses.OFFERS})
       .then(Api.toJSON);
   }
 
   getDestinations() {
-    return this._load({url: UrlAddress.DESTINATIONS})
+    return this._load({url: UrlAddresses.DESTINATIONS})
       .then(Api.toJSON);
   }
 
   updatePoint(event) {
     return this._load({
-      url: `${UrlAddress.POINTS}/${event.id}`,
-      method: Method.PUT,
+      url: `${UrlAddresses.POINTS}/${event.id}`,
+      method: Methods.PUT,
       body: JSON.stringify(PointsModel.adaptToServer(event)),
       headers: new Headers({"Content-Type": `application/json`})
     })
@@ -41,8 +53,8 @@ export default class Api {
 
   addPoint(event) {
     return this._load({
-      url: `${UrlAddress.POINTS}`,
-      method: Method.POST,
+      url: `${UrlAddresses.POINTS}`,
+      method: Methods.POST,
       body: JSON.stringify(PointsModel.adaptToServer(event)),
       headers: new Headers({"Content-Type": `application/json`})
     })
@@ -52,15 +64,15 @@ export default class Api {
 
   deletePoint(event) {
     return this._load({
-      url: `${UrlAddress.POINTS}/${event.id}`,
-      method: Method.DELETE
+      url: `${UrlAddresses.POINTS}/${event.id}`,
+      method: Methods.DELETE
     });
   }
 
   sync(data) {
     return this._load({
-      url: `${UrlAddress.POINTS}/sync`,
-      method: Method.POST,
+      url: `${UrlAddresses.POINTS}/sync`,
+      method: Methods.POST,
       body: JSON.stringify(data),
       headers: new Headers({"Content-Type": `application/json`})
     })
@@ -69,7 +81,7 @@ export default class Api {
 
   _load({
     url,
-    method = Method.GET,
+    method = Methods.GET,
     body = null,
     headers = new Headers()
   }) {

@@ -24,12 +24,12 @@ export const BLANK_POINT = {
 
 export const ESC_BUTTON = `Escape`;
 
-export const OperatingMode = {
+export const OperatingModes = {
   DEFAULT: `default`,
   EDITING: `editing`
 };
 
-export const RenderPosition = {
+export const RenderPositions = {
   BEFOREBEGIN: `beforebegin`,
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`
@@ -46,13 +46,13 @@ export const MenuTabs = {
   STATS: `Stats`
 };
 
-export const UserAction = {
+export const UserActions = {
   UPDATE_POINT: `updatepoint`,
   ADD_POINT: `addpoint`,
   DELETE_POINT: `deletepoint`
 };
 
-export const UpdateType = {
+export const UpdateTypes = {
   PATCH: `patch`,
   MINOR: `minor`,
   MAJOR: `major`,
@@ -66,36 +66,10 @@ export const StatisticsCharts = {
 
 };
 
-export const State = {
+export const States = {
   SAVING: `saving`,
   DELETING: `deleting`,
   ABORTING: `aborting`
 };
-
-export const Method = {
-  GET: `get`,
-  PUT: `put`,
-  POST: `post`,
-  DELETE: `delete`
-};
-
-export const UrlAddress = {
-  POINTS: `points`,
-  OFFERS: `offers`,
-  DESTINATIONS: `destinations`
-};
-
-export const StoreLabels = {
-  POINTS: `points`,
-  OFFERS: `offers`,
-  DESTINATION: `destinations`
-};
-
-export const Color = {
-  BACKDROP: `#ffffff`,
-  TEXT: `#000000`,
-};
-
-export const BAR_HEIGHT = 55;
 
 
