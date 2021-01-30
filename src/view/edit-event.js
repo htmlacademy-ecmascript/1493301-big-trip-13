@@ -315,7 +315,7 @@ export default class EditEventView extends SmartView {
     this._callback.submit(EditEventView.parseDataToEvent(this._data));
   }
 
-  _cardArrowHandler() {
+  _cardArrowHandler(event) {
     this._callback.onArrowClick(EditEventView.parseEventToData(event));
   }
 

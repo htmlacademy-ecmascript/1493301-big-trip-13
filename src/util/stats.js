@@ -18,7 +18,7 @@ export const countTimeAmount = (points, type) => {
   const MS_IN_MINUTE = 60000;
   const msInHour = MS_IN_MINUTE * 60;
 
-  let durationInMS = points.filter((point) => point.type === type)
+  const durationInMS = points.filter((point) => point.type === type)
     .reduce((cur, point) => cur + findDurationInMsec(point.eventStart, point.eventEnd), 0);
 
   return (durationInMS / msInHour).toFixed(2);
