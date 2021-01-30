@@ -8,7 +8,7 @@ export default class PointsModel extends Observer {
 
   setPoints(updateType, routePoints) {
     this._routePoints = routePoints.slice();
-    this._notify(updateType);
+    this.notify(updateType);
   }
 
   getPoints() {
@@ -28,7 +28,7 @@ export default class PointsModel extends Observer {
       ...this._routePoints.slice(index + 1)
     ];
 
-    this._notify(updateType, update);
+    this.notify(updateType, update);
   }
 
   addPoint(updateType, update) {
@@ -37,7 +37,7 @@ export default class PointsModel extends Observer {
       ...this._routePoints
     ];
 
-    this._notify(updateType, update);
+    this.notify(updateType, update);
   }
 
   deletePoint(updateType, update) {
@@ -52,7 +52,7 @@ export default class PointsModel extends Observer {
       ...this._routePoints.slice(index + 1)
     ];
 
-    this._notify(updateType);
+    this.notify(updateType);
   }
 
   static adaptToClient(routePoint) {

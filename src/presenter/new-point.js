@@ -1,6 +1,8 @@
 import EditEventView from '../view/edit-event';
 import {remove, render} from '../util/render';
-import {RenderPosition, UserAction, UpdateType, ESC_BUTTON, BLANK_POINT} from '../const';
+import {RenderPositions, UserActions, UpdateTypes, ESC_BUTTON, BLANK_POINT} from '../const';
+import {isOnline} from '../util/global';
+import {toast} from '../util/toast';
 
 export default class NewEventPresenter {
   constructor(eventsListContainer, offersModel, destinationsModel, changeData) {
@@ -24,7 +26,7 @@ export default class NewEventPresenter {
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
-    render(this._eventsListContainer, this._eventEditComponent, RenderPosition.AFTERBEGIN);
+    render(this._eventsListContainer, this._eventEditComponent, RenderPositions.AFTERBEGIN);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
@@ -45,9 +47,14 @@ export default class NewEventPresenter {
   }
 
   _handleFormSubmit(event) {
+    if (!isOnline()) {
+      this._eventEditComponent.shake();
+      toast(`You can't save point offline`);
+      return;
+    }
     this._changeData(
-        UserAction.ADD_POINT,
-        UpdateType.MINOR,
+        UserActions.ADD_POINT,
+        UpdateTypes.MINOR,
         event
     );
     this.destroy();

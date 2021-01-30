@@ -4,6 +4,11 @@ import SmartView from './smart';
 import {countMoneyAmount, countPointsAmount, countTimeAmount} from '../util/stats';
 import {EVENT_TYPES, StatisticsCharts} from '../const';
 
+const Colors = {
+  BACKDROP: `#ffffff`,
+  TEXT: `#000000`,
+};
+
 const BAR_HEIGHT = 55;
 
 const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) => {
@@ -14,8 +19,8 @@ const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) 
       labels: chartLabel,
       datasets: [{
         data: chartData,
-        backgroundColor: `#ffffff`,
-        hoverBackgroundColor: `#ffffff`,
+        backgroundColor: Colors.BACKDROP,
+        hoverBackgroundColor: Colors.BACKDROP,
         anchor: `start`
       }]
     },
@@ -25,7 +30,7 @@ const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) 
           font: {
             size: 15
           },
-          color: `#000000`,
+          color: Colors.TEXT,
           anchor: `end`,
           align: `start`,
           formatter: chartFormatter
@@ -34,14 +39,14 @@ const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) 
       title: {
         display: true,
         text: `${chartHedings}`,
-        fontColor: `#000000`,
+        fontColor: Colors.TEXT,
         fontSize: 25,
         position: `left`
       },
       scales: {
         yAxes: [{
           ticks: {
-            fontColor: `#000000`,
+            fontColor: Colors.TEXT,
             padding: 10,
             fontSize: 15,
           },

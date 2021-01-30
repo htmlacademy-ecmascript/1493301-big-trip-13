@@ -1,19 +1,28 @@
 import AbstractView from './abstract';
+import {getRouteDates, getRouteTotalCost} from '../util/event';
 
-const createTripInfoTemplate = () => {
+
+const createTripInfoTemplate = (events) => {
+  const routeDestinations = (events.length <= 3) ? events.map((event) => event.destination).join(` &mdash; `) : `${events[0].destination} &mdash; ...  &mdash; ${events[events.length - 1].destination}`;
+  const [routeFisrtDate, routeLastDate] = getRouteDates(events);
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
-      <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
-      <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
+      <h1 class="trip-info__title">${routeDestinations}</h1>
+      <p class="trip-info__dates">${routeFisrtDate} &hellip; ${routeLastDate}</p>
     </div>
     <p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">570</span>
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">${getRouteTotalCost(events)}</span>
     </p>
   </section>`;
 };
 
 export default class TripInfoView extends AbstractView {
+  constructor(events) {
+    super();
+    this._events = events;
+  }
+
   getTemplate() {
-    return createTripInfoTemplate();
+    return createTripInfoTemplate(this._events);
   }
 }

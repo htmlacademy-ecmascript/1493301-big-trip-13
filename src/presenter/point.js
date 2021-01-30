@@ -1,8 +1,9 @@
 import EventView from '../view/event';
 import EditEventView from '../view/edit-event';
 import {render, replace, remove} from '../util/render';
-import {RenderPosition, ESC_BUTTON, OperatingMode, UserAction, UpdateType, State} from '../const';
-
+import {RenderPositions, ESC_BUTTON, OperatingModes, UserActions, UpdateTypes, States} from '../const';
+import {isOnline} from '../util/global';
+import {toast} from '../util/toast';
 
 export default class PointPresenter {
   constructor(eventsListContainer, offersModel, destinationsModel, changeData, changeMode) {
@@ -11,7 +12,7 @@ export default class PointPresenter {
     this._destinationsModel = destinationsModel;
     this._changeData = changeData;
     this._changeMode = changeMode;
-    this._mode = OperatingMode.DEFAULT;
+    this._mode = OperatingModes.DEFAULT;
     this._eventComponent = null;
     this._eventEditComponent = null;
 
@@ -44,17 +45,17 @@ export default class PointPresenter {
 
 
     if (prevEventComponent === null) {
-      render(this._eventsListContainer, this._eventComponent, RenderPosition.BEFOREEND);
+      render(this._eventsListContainer, this._eventComponent, RenderPositions.BEFOREEND);
       return;
     }
 
-    if (this._mode === OperatingMode.DEFAULT) {
+    if (this._mode === OperatingModes.DEFAULT) {
       replace(this._eventComponent, prevEventComponent);
     }
 
-    if (this._mode === OperatingMode.EDITING) {
+    if (this._mode === OperatingModes.EDITING) {
       replace(this._eventComponent, prevEventEditComponent);
-      this._mode = OperatingMode.DEFAULT;
+      this._mode = OperatingModes.DEFAULT;
     }
 
     remove(prevEventComponent);
@@ -67,7 +68,7 @@ export default class PointPresenter {
   }
 
   resetView() {
-    if (this._mode !== OperatingMode.DEFAULT) {
+    if (this._mode !== OperatingModes.DEFAULT) {
       this._replaceFormToCard();
     }
   }
@@ -75,14 +76,14 @@ export default class PointPresenter {
   _replaceFormToCard() {
     replace(this._eventComponent, this._eventEditComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
-    this._mode = OperatingMode.DEFAULT;
+    this._mode = OperatingModes.DEFAULT;
   }
 
   _replaceCardToForm() {
     replace(this._eventEditComponent, this._eventComponent);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
-    this._mode = OperatingMode.EDITING;
+    this._mode = OperatingModes.EDITING;
   }
 
   _escKeyDownHandler(evt) {
@@ -93,13 +94,24 @@ export default class PointPresenter {
   }
 
   _handleEditClick() {
+    if (!isOnline()) {
+      toast(`You can't edit point offline`);
+      return;
+    }
+
     this._replaceCardToForm();
   }
 
   _handleFormSubmit(update) {
+    if (!isOnline()) {
+      toast(`You can't save point offline`);
+      this.setViewState(States.ABORTING);
+      return;
+    }
+
     this._changeData(
-        UserAction.UPDATE_POINT,
-        UpdateType.MINOR,
+        UserActions.UPDATE_POINT,
+        UpdateTypes.MINOR,
         update
     );
   }
@@ -109,17 +121,23 @@ export default class PointPresenter {
   }
 
   _handleDeleteClick(routePoint) {
+    if (!isOnline()) {
+      toast(`You can't delete event offline`);
+      this.setViewState(States.ABORTING);
+      return;
+    }
+
     this._changeData(
-        UserAction.DELETE_POINT,
-        UpdateType.MINOR,
+        UserActions.DELETE_POINT,
+        UpdateTypes.MINOR,
         routePoint
     );
   }
 
   _handleClickFavorite() {
     this._changeData(
-        UserAction.UPDATE_POINT,
-        UpdateType.MINOR,
+        UserActions.UPDATE_POINT,
+        UpdateTypes.MINOR,
         Object.assign(
             {},
             this._routePoint,
@@ -140,19 +158,19 @@ export default class PointPresenter {
     };
 
     switch (state) {
-      case State.SAVING:
+      case States.SAVING:
         this._eventEditComponent.updateData({
           isDisabled: true,
           isSaving: true
         });
         break;
-      case State.DELETING:
+      case States.DELETING:
         this._eventEditComponent.updateData({
           isDisabled: true,
           isDeleting: true
         });
         break;
-      case State.ABORTING:
+      case States.ABORTING:
         this._eventComponent.shake(resetFormState);
         this._eventEditComponent.shake(resetFormState);
         break;

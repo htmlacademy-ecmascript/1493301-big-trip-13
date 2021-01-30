@@ -1,15 +1,15 @@
 import TripFiltersView from '../view/trip-filters';
 import {render, replace, remove} from '../util/render';
 import {FILTER} from '../util/filter';
-import {RenderPosition, FilterTypes, UpdateType} from '../const';
+import {RenderPositions, FilterTypes, UpdateTypes} from '../const';
 
 export default class FilterPresenter {
   constructor(filterContainer, filterModel, pointsModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._pointsModel = pointsModel;
-    this._currentFilter = null;
 
+    this._currentFilter = null;
     this._filterComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -29,7 +29,7 @@ export default class FilterPresenter {
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
+      render(this._filterContainer, this._filterComponent, RenderPositions.BEFOREEND);
       return;
     }
 
@@ -46,7 +46,7 @@ export default class FilterPresenter {
       return;
     }
 
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.setFilter(UpdateTypes.MAJOR, filterType);
   }
 
   _getFilters() {
@@ -57,5 +57,14 @@ export default class FilterPresenter {
         count: FILTER[filter](this._pointsModel.getPoints()).length
       };
     });
+  }
+
+  proscribeFilters() {
+    this._filterComponent.proscribeFilters();
+  }
+
+  activateFilters() {
+    this._filterComponent.activateFilters();
+    this._filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
   }
 }

@@ -1,5 +1,5 @@
 import Abstract from '../view/abstract';
-import {RenderPosition} from '../const';
+import {RenderPositions} from '../const';
 
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
@@ -18,10 +18,10 @@ export const render = (container, child, place) => {
   }
 
   switch (place) {
-    case RenderPosition.AFTERBEGIN:
+    case RenderPositions.AFTERBEGIN:
       container.prepend(child);
       break;
-    case RenderPosition.BEFOREEND:
+    case RenderPositions.BEFOREEND:
       container.append(child);
       break;
   }
