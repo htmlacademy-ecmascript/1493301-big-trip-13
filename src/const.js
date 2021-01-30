@@ -59,13 +59,6 @@ export const UpdateTypes = {
   INIT: `init`
 };
 
-export const StatisticsCharts = {
-  TIME: `time`,
-  MONEY: `money`,
-  TYPE: `transport`
-
-};
-
 export const States = {
   SAVING: `saving`,
   DELETING: `deleting`,

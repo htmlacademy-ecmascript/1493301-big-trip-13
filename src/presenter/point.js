@@ -36,7 +36,7 @@ export default class PointPresenter {
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._eventComponent.setEditClickHandler(this._handleEditClick);
 
-    if (!this._eventEditComponent._createdNewPoint) {
+    if (!this._eventEditComponent._isNewPoint) {
       this._eventEditComponent.setCardArrowHandler(this._handleArrowClick);
     }
 
