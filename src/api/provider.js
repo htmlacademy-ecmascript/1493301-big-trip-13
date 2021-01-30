@@ -1,6 +1,12 @@
 import PointsModel from '../model/points';
 import {isOnline} from '../util/global';
 
+const Errors = {
+  ADD: `Add point failed`,
+  DELETE: `Delete point failed`,
+  SYNC: `Sync data failed`,
+};
+
 const StoreLabels = {
   POINTS: `points`,
   OFFERS: `offers`,
@@ -71,7 +77,7 @@ export default class Provider {
       return this._api.deletePoint(point)
         .then(() => this._store.removeItem(StoreLabels.POINTS, point.id));
     }
-    return Promise.reject(new Error(`Delete point failed`));
+    return Promise.reject(new Error(Errors.DELETE));
   }
 
   addPoint(point) {
@@ -82,7 +88,7 @@ export default class Provider {
           return newPoint;
         });
     }
-    return Promise.reject(new Error(`Add point failed`));
+    return Promise.reject(new Error(Errors.ADD));
   }
 
   getOffers() {
@@ -129,6 +135,6 @@ export default class Provider {
         });
     }
 
-    return Promise.reject(new Error(`Sync data failed`));
+    return Promise.reject(new Error(Errors.SYNC));
   }
 }

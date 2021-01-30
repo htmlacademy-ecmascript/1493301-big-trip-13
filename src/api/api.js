@@ -1,16 +1,17 @@
 import PointsModel from '../model/points';
 
 const Methods = {
-  GET: `get`,
-  PUT: `put`,
-  POST: `post`,
-  DELETE: `delete`
+  GET: `GET`,
+  PUT: `PUT`,
+  POST: `POST`,
+  DELETE: `DELETE`
 };
 
 const UrlAddresses = {
   POINTS: `points`,
   OFFERS: `offers`,
-  DESTINATIONS: `destinations`
+  DESTINATIONS: `destinations`,
+  SYNC: `sync`
 };
 
 const SuccessHTTPStatusRange = {
@@ -71,7 +72,7 @@ export default class Api {
 
   sync(data) {
     return this._load({
-      url: `${UrlAddresses.POINTS}/sync`,
+      url: `${UrlAddresses.POINTS}/${UrlAddresses.SYNC}`,
       method: Methods.POST,
       body: JSON.stringify(data),
       headers: new Headers({"Content-Type": `application/json`})

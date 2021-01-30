@@ -15,13 +15,17 @@ import Provider from './api/provider';
 import {toast} from './util/toast';
 import ConnectionErrorView from './view/connection-error';
 
+const OFFLINE_LABEL = ` [offline]`;
+const ONLINE_POINT = `online`;
+const OFFLINE_POINT = `offline`;
+const LOAD_POINT = `load`;
+
 const AUTHORIZATION = `Basic ow13r13p55s02va34`;
 const ENDPOINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 const STORE_PREF = `bigtrip-localstorage`;
 const STORE_VER = `v13`;
 const STORE_LABEL = `${STORE_PREF}-${STORE_VER}`;
-
 const store = new Store(STORE_LABEL, window.localStorage);
 
 const api = new Api(ENDPOINT, AUTHORIZATION);
@@ -75,6 +79,7 @@ const handleMenuTabsClick = (MenuTab) => {
     case MenuTabs.STATS:
       filterPresenter.proscribeFilters();
       routePresenter.destroy();
+      addNewPoint.disabled = true;
       statisticsComponent = new StatsView(pointsModel.getPoints());
       render(routeEventsElement, statisticsComponent, RenderPositions.BEFOREEND);
       break;
@@ -106,13 +111,12 @@ Promise.all([
   });
 
 
-window.addEventListener(`load`, () => {
+window.addEventListener(LOAD_POINT, () => {
   navigator.serviceWorker.register(`./sw.js`);
 });
 
-
-window.addEventListener(`online`, () => {
-  document.title = document.title.replace(` [offline]`, ``);
+window.addEventListener(ONLINE_POINT, () => {
+  document.title = document.title.replace(OFFLINE_LABEL, ``);
 
   remove(connectionErrorComponent);
 
@@ -121,8 +125,8 @@ window.addEventListener(`online`, () => {
   }
 });
 
-window.addEventListener(`offline`, () => {
-  document.title += ` [offline]`;
+window.addEventListener(OFFLINE_POINT, () => {
+  document.title += OFFLINE_LABEL;
 
   render(routeMainElement, connectionErrorComponent, RenderPositions.AFTERBEGIN);
 });

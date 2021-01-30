@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {humaneEventDate, humaneEventTime, createPrepositions, getTimeDiff} from '../util/event';
+import {humaneEventDate, humaneEventTime, createPrepositions, getTimeDuration} from '../util/event';
 
 const createOffers = (offers) => {
   return `<h4 class="visually-hidden">Offers:</h4>
@@ -23,7 +23,7 @@ const createEventTemplate = (event) => {
     price
   } = event;
 
-  const duration = getTimeDiff(eventStart, eventEnd);
+  const duration = getTimeDuration(eventStart, eventEnd);
   const offersTemplate = offers ? createOffers(offers) : ``;
   const favoriteClassName = isFavorite
     ? `event__favorite-btn--active`

@@ -2,7 +2,13 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart';
 import {countMoneyAmount, countPointsAmount, countTimeAmount} from '../util/stats';
-import {EVENT_TYPES, StatisticsCharts} from '../const';
+import {EVENT_TYPES} from '../const';
+
+const StatisticsCharts = {
+  TIME: `time`,
+  MONEY: `money`,
+  TYPE: `transport`
+};
 
 const Colors = {
   BACKDROP: `#ffffff`,
@@ -78,11 +84,11 @@ const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) 
   };
 };
 
-const createStatistics = () => {
+const createStatistics = (typesForStatistics) => {
   return `<section class="statistics" id="stats">
     <h2 class="visually-hidden">Trip statistics</h2>
     ${Object.values(StatisticsCharts).map((chartType) => `<div class="statistics__item statistics__item--${chartType}">
-      <canvas class="statistics__chart  statistics__chart--${chartType}" width="900" height ="${BAR_HEIGHT * EVENT_TYPES.length}"></canvas>
+      <canvas class="statistics__chart  statistics__chart--${chartType}" width="900" height ="${BAR_HEIGHT * typesForStatistics.length}"></canvas>
     </div>`).join(``)}
   </section>`;
 };
@@ -92,10 +98,11 @@ export default class StatsView extends SmartView {
     super();
 
     this._data = events;
-
     this._moneyChart = null;
     this._typeChart = null;
     this._timeChart = null;
+
+    this._eventsForStatistics = EVENT_TYPES.filter((type) => countPointsAmount(this._data, type) !== 0);
 
     this._setCharts();
   }
@@ -111,7 +118,7 @@ export default class StatsView extends SmartView {
   }
 
   getTemplate() {
-    return createStatistics(this._data);
+    return createStatistics(this._eventsForStatistics);
   }
 
   restoreHandlers() {
@@ -129,10 +136,10 @@ export default class StatsView extends SmartView {
     const moneySetting = this.getElement().querySelector(`.statistics__chart--money`);
     const timeSetting = this.getElement().querySelector(`.statistics__chart--time`);
 
-    const labels = EVENT_TYPES.map((type) => type.toUpperCase());
-    const typeChartData = EVENT_TYPES.map((type) => countPointsAmount(this._data, type));
-    const moneyChartData = EVENT_TYPES.map((type) => countMoneyAmount(this._data, type));
-    const timeSpendChartData = EVENT_TYPES.map((type) => countTimeAmount(this._data, type));
+    const labels = this._eventsForStatistics.map((type) => type.toUpperCase());
+    const typeChartData = this._eventsForStatistics.map((type) => countPointsAmount(this._data, type));
+    const moneyChartData = this._eventsForStatistics.map((type) => countMoneyAmount(this._data, type));
+    const timeSpendChartData = this._eventsForStatistics.map((type) => countTimeAmount(this._data, type));
 
     this._moneyChart = new Chart(moneySetting, drawChartTemplate(labels, `MONEY`, (val) => `€ ${val}`, moneyChartData));
     this._typeChart = new Chart(typeSetting, drawChartTemplate(labels, `TYPE`, (val) => `${val}x`, typeChartData));

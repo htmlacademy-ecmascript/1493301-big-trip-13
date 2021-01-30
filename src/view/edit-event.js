@@ -38,7 +38,7 @@ const createOffers = (offers, realtedOffers, isDisabled) => {
 };
 
 
-const createEditEventTemplate = (event, specialOffers, cities, createdNewPoint) => {
+const createEditEventTemplate = (event, specialOffers, cities, isNewPoint) => {
   const {
     destination,
     type,
@@ -108,7 +108,7 @@ const createEditEventTemplate = (event, specialOffers, cities, createdNewPoint) 
                   </div>
 
                 <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaveForbidden || isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
-                  ${!createdNewPoint ? ` <button class="event__reset-btn" type="reset">${isDeleting ? `Deleting...` : `Delete`}</button>
+                  ${!isNewPoint ? ` <button class="event__reset-btn" type="reset">${isDeleting ? `Deleting...` : `Delete`}</button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
                   </button>` : `<button class="event__reset-btn" type="reset">Cancel</button>`}
@@ -141,12 +141,12 @@ const createEditEventTemplate = (event, specialOffers, cities, createdNewPoint) 
 
 
 export default class EditEventView extends SmartView {
-  constructor(event = BLANK_POINT, specialOffers, cities, createdNewPoint = false) {
+  constructor(event = BLANK_POINT, specialOffers, cities, isNewPoint = false) {
     super();
     this._data = EditEventView.parseEventToData(event);
     this._specialOffers = specialOffers;
     this._cities = cities;
-    this._createdNewPoint = createdNewPoint;
+    this._isNewPoint = isNewPoint;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
@@ -164,7 +164,7 @@ export default class EditEventView extends SmartView {
   }
 
   getTemplate() {
-    return createEditEventTemplate(this._data, this._specialOffers, this._cities, this._createdNewPoint);
+    return createEditEventTemplate(this._data, this._specialOffers, this._cities, this._isNewPoint);
   }
 
   removeElement() {
@@ -212,7 +212,7 @@ export default class EditEventView extends SmartView {
     this._setDatepicker();
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.submit);
-    if (!this._createdNewPoint) {
+    if (!this._isNewPoint) {
       this.setCardArrowHandler(this._callback.onArrowClick);
     }
   }

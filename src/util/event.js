@@ -17,7 +17,7 @@ export const createPrepositions = (type) => {
   return TRANSFER_EVENTS.includes(type) ? `to` : `in`;
 };
 
-export const getTimeDiff = (start, end) => {
+export const getTimeDuration = (start, end) => {
   let duration = ``;
   const dayDuration = dayjs(end).diff(dayjs(start), `day`);
   const hourDuration = dayjs(end).diff(dayjs(start), `hour`) % 24;
