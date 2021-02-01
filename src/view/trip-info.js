@@ -1,9 +1,10 @@
 import AbstractView from './abstract';
 import {getRouteDates, getRouteTotalCost} from '../util/event';
 
+const MAX_EVENTS_IN_TITLE = 3;
 
 const createTripInfoTemplate = (events) => {
-  const routeDestinations = (events.length <= 3) ? events.map((event) => event.destination).join(` &mdash; `) : `${events[0].destination} &mdash; ...  &mdash; ${events[events.length - 1].destination}`;
+  const routeDestinations = (events.length <= MAX_EVENTS_IN_TITLE) ? events.map((event) => event.destination).join(` &mdash; `) : `${events[0].destination} &mdash; ...  &mdash; ${events[events.length - 1].destination}`;
   const [routeFisrtDate, routeLastDate] = getRouteDates(events);
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
