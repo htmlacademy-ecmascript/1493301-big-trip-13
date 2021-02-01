@@ -4,6 +4,8 @@ import SmartView from './smart';
 import {countMoneyAmount, countPointsAmount, countTimeAmount} from '../util/stats';
 import {EVENT_TYPES} from '../const';
 
+const BAR_HEIGHT = 55;
+
 const StatisticsCharts = {
   TIME: `time`,
   MONEY: `money`,
@@ -14,8 +16,6 @@ const Colors = {
   BACKDROP: `#ffffff`,
   TEXT: `#000000`,
 };
-
-const BAR_HEIGHT = 55;
 
 const drawChartTemplate = (chartLabel, chartHedings, chartFormatter, chartData) => {
   return {
