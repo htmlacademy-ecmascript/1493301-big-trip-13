@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+const MS_IN_MINUTE = 60000;
 
 const findDurationInMsec = (start, end) => {
   return dayjs(end).diff(dayjs(start));
@@ -15,7 +16,6 @@ export const countPointsAmount = (events, type) => {
 };
 
 export const countTimeAmount = (points, type) => {
-  const MS_IN_MINUTE = 60000;
   const msInHour = MS_IN_MINUTE * 60;
 
   const durationInMS = points.filter((point) => point.type === type)
